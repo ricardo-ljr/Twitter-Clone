@@ -43,6 +43,7 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.view.login.LoginActivity;
 import edu.byu.cs.tweeter.client.view.login.StatusDialogFragment;
 import edu.byu.cs.tweeter.client.view.util.ImageUtils;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -72,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
             throw new RuntimeException("User not passed to activity");
         }
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), selectedUser);
+        AuthToken authToken = Cache.getInstance().getCurrUserAuthToken();
+
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), selectedUser, authToken);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(sectionsPagerAdapter);
