@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.backgroundTask.BackgroundTaskUtils;
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -82,7 +81,7 @@ public class FollowService {
      */
     public static class GetFollowingHandler extends Handler {
 
-        private GetFollowingObserver observer;
+        private final GetFollowingObserver observer;
 
         public GetFollowingHandler(Looper looper, GetFollowingObserver observer) {
             super(looper);

@@ -56,7 +56,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             } else if (position == REGULAR_FOLLOWING_FRAGMENT_POSITION) {
                 return FollowingFragment.newInstance(user, authToken);
             } else if (position == REGULAR_FOLLOWERS_FRAGMENT_POSITION) {
-                return FollowersFragment.newInstance(user);
+                return FollowersFragment.newInstance(user, authToken);
             } else {
                 return null;
             }
@@ -66,7 +66,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             } else if (position == OTHER_FOLLOWING_FRAGMENT_POSITION) {
                 return FollowingFragment.newInstance(user, authToken);
             } else if (position == OTHER_FOLLOWERS_FRAGMENT_POSITION) {
-                return FollowersFragment.newInstance(user);
+                return FollowersFragment.newInstance(user, authToken);
             } else {
                 return null;
             }

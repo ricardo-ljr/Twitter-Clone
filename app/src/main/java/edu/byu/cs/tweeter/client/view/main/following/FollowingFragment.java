@@ -105,7 +105,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
     @Override
     public void clearErrorMessage() {
-
+        Toast.makeText(getContext(), "Cleared", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
     @Override
     public void clearInfoMessage() {
-
+        Toast.makeText(getContext(), "Cleared Info", Toast.LENGTH_LONG).show();
     }
 
 
@@ -140,21 +140,19 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
         followingRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
-//        presenter.loadMoreItems();
-
         return view;
     }
 
-                /**
-             * Causes the Adapter to display a loading footer and make a request to get more following
-             * data.
-             */
-            void loadMoreItems() { // Services Layer
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(() -> {
-                    presenter.loadMoreItems();
-                }, 0);
-            }
+    /**
+     * Causes the Adapter to display a loading footer and make a request to get more following
+     * data.
+     * */
+    void loadMoreItems() { // Services Layer
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            presenter.loadMoreItems();
+            }, 0);
+    }
 
     /**
      * The ViewHolder for the RecyclerView that displays the Following data.
@@ -204,10 +202,6 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
         private class FollowingRecyclerViewAdapter extends RecyclerView.Adapter<FollowingHolder> {
 
             private final List<User> users = new ArrayList<>();
-
-            private User lastFollowee; // paging process - presenter
-
-            private boolean hasMorePages; // paging process - presenter
 
             /**
              * Creates an instance and loads the first page of following data.
