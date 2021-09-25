@@ -5,12 +5,12 @@ import android.util.Log;
 
 import java.util.List;
 
-import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.FollowingService;
 import edu.byu.cs.tweeter.client.view.main.following.FollowingFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowingPresenter implements FollowService.GetFollowingObserver{
+public class FollowingPresenter implements FollowingService.GetFollowingObserver{
 
     private static final String LOG_TAG = "FollowingPresenter";
     private static final int PAGE_SIZE = 10;
@@ -103,14 +103,14 @@ public class FollowingPresenter implements FollowService.GetFollowingObserver{
     }
 
     /**
-     * Returns an instance of {@link FollowService}. Allows mocking of the FollowService class
+     * Returns an instance of {@link FollowingService}. Allows mocking of the FollowService class
      * for testing purposes. All usages of FollowService should get their FollowService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    public FollowService getFollowingService(FollowService.GetFollowingObserver observer) {
-        return new FollowService(observer);
+    public FollowingService getFollowingService(FollowingService.GetFollowingObserver observer) {
+        return new FollowingService(observer);
     }
 
     /**

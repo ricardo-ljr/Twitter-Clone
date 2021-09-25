@@ -17,7 +17,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Contains the business logic for getting the users a user is following.
  */
-public class FollowService {
+public class FollowingService {
 
     private final GetFollowingObserver observer;
 
@@ -36,7 +36,7 @@ public class FollowService {
      *
      * @param observer the observer who wants to be notified when any asynchronous operations complete.
      */
-    public FollowService(GetFollowingObserver observer) {
+    public FollowingService(GetFollowingObserver observer) {
         // An assertion would be better, but Android doesn't support Java assertions
         if(observer == null) {
             throw new NullPointerException();
