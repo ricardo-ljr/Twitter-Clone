@@ -57,10 +57,9 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
      * bundle assigned to the fragment.
      *
      * @param user the logged in user.
-     * @param authToken the auth token for this user's session.
      * @return the fragment.
      */
-    public static FollowingFragment newInstance(User user, AuthToken authToken) {
+    public static FollowingFragment newInstance(User user) {
         FollowingFragment fragment = new FollowingFragment();
 
         Bundle args = new Bundle(1);
@@ -149,7 +148,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
              * Causes the Adapter to display a loading footer and make a request to get more following
              * data.
              */
-            void loadMoreItems() { // Services Layer
+            private void loadMoreItems() { // Services Layer
                 final Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> {
                     presenter.loadMoreItems();

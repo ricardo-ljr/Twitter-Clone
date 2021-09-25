@@ -1,21 +1,27 @@
 package edu.byu.cs.tweeter.client.model.service;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.io.ByteArrayOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.backgroundTask.LoginTask;
+import edu.byu.cs.tweeter.client.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.client.view.main.following.FollowingFragment;
@@ -39,36 +45,13 @@ public class UserService {
         void handleException(Exception exception);
     }
 
-
-//    /**
-//     * Makes an asynchronous login request.
-//     *
-//     * @param username the user's name.
-//     * @param password the user's password.
-//     */
-//    public void login(String username, String password) {
-//        LoginTask loginTask = getLoginTask(username, password);
-//        BackgroundTaskUtils.runTask(loginTask);
-//    }
-
-    public void getUser(AuthToken authToken, String alias, GetUserObserver observer) {
+    public void getUsers(AuthToken authToken, String alias, GetUserObserver observer) {
         GetUserTask getUserTask = new GetUserTask(authToken,
                 alias, new GetUserHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getUserTask);
 //        Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
     }
-
-//    /**
-//     * Returns an instance of {@link LoginTask}. Allows mocking of the LoginTask class for
-//     * testing purposes. All usages of LoginTask should get their instance from this method to
-//     * allow for proper mocking.
-//     *
-//     * @return the instance.
-//     */
-//    LoginTask getLoginTask(String username, String password) {
-//        return new LoginTask(username, password, new MessageHandler(Looper.getMainLooper(), observer));
-//    }
 
     /**
      * Message handler (i.e., observer) for GetUserTask.
@@ -99,70 +82,122 @@ public class UserService {
         }
     }
 
-//    /**
-//     * Background task that logs in a user (i.e., starts a session).
-//     */
-//    private static class LoginTask extends BackgroundTask {
+    public interface RegisterObserver {
+        void handleSuccess(User user, AuthToken authToken);
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
+
+    // RegisterHandler
+
+    private class RegisterHandler extends Handler {
+
+        private UserService.RegisterObserver observer;
+
+        public RegisterHandler(UserService.RegisterObserver observer) {
+            this.observer = observer;
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            boolean success = msg.getData().getBoolean(RegisterTask.SUCCESS_KEY);
+            if (success) {
+                User registeredUser = (User) msg.getData().getSerializable(RegisterTask.USER_KEY);
+                AuthToken authToken = (AuthToken) msg.getData().getSerializable(RegisterTask.AUTH_TOKEN_KEY);
+//                Intent intent = new Intent(getContext(), MainActivity.class);
+                Cache.getInstance().setCurrUser(registeredUser);
+                Cache.getInstance().setCurrUserAuthToken(authToken);
+
+//                intent.putExtra(MainActivity.CURRENT_USER_KEY, registeredUser);
+
+//                registeringToast.cancel();
+
+//                Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(), Toast.LENGTH_LONG).show();
+                try {
+//                    startActivity(intent);
+                    observer.handleSuccess(registeredUser, authToken);
+                } catch (Exception e) {
+                    observer.handleException(e);
+                }
+            } else if (msg.getData().containsKey(RegisterTask.MESSAGE_KEY)) {
+                String message = msg.getData().getString(RegisterTask.MESSAGE_KEY);
+                observer.handleFailure(message);
+//                Toast.makeText(getContext(), "Failed to register: " + message, Toast.LENGTH_LONG).show();
+            } else if (msg.getData().containsKey(RegisterTask.EXCEPTION_KEY)) {
+                Exception ex = (Exception) msg.getData().getSerializable(RegisterTask.EXCEPTION_KEY);
+                observer.handleException(ex);
+//                Toast.makeText(getContext(), "Failed to register because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void register(String alias, String password, String firstName, String lastName, ImageView imageToUpload, UserService.RegisterObserver observer) {
+        // Convert image to byte array.
+        Bitmap image = ((BitmapDrawable) imageToUpload.getDrawable()).getBitmap();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        byte[] imageBytes = bos.toByteArray();
+        String imageBytesBase64 = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+
+        // Send register request.
+        RegisterTask registerTask = new RegisterTask(firstName, lastName, alias, password, imageBytesBase64, new RegisterHandler(observer));
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(registerTask);
+    }
+
+    public interface LoginObserver {
+        void handleSuccess(User user, AuthToken authToken);
+        void handleFailure(String message);
+        void handleException(Exception exception);
+    }
+
+    public void login(String alias, String password, LoginObserver observer) {
+        // Send the login request.
+        LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(loginTask);
+    }
+
+    /**
+     * Message handler (i.e., observer) for LoginTask
+     */
+    private class LoginHandler extends Handler {
+
+        private LoginObserver observer;
+
+        public LoginHandler(LoginObserver observer) {
+            this.observer = observer;
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            boolean success = msg.getData().getBoolean(LoginTask.SUCCESS_KEY);
+            if (success) {
+                User loggedInUser = (User) msg.getData().getSerializable(LoginTask.USER_KEY);
+                AuthToken authToken = (AuthToken) msg.getData().getSerializable(LoginTask.AUTH_TOKEN_KEY);
+
+                // Cache user session information
+                Cache.getInstance().setCurrUser(loggedInUser);
+                Cache.getInstance().setCurrUserAuthToken(authToken);
 //
-//        private static final String LOG_TAG = "LoginTask";
+//                Intent intent = new Intent(getContext(), MainActivity.class);
+//                intent.putExtra(MainActivity.CURRENT_USER_KEY, loggedInUser);
 //
-//        public static final String USER_KEY = "user";
-//        public static final String AUTH_TOKEN_KEY = "auth-token";
-//
-//        /**
-//         * The user's username (or "alias" or "handle"). E.g., "@susan".
-//         */
-//        private String username;
-//        /**
-//         * The user's password.
-//         */
-//        private String password;
-//
-//        public LoginTask(String username, String password, Handler messageHandler) {
-//            super(messageHandler);
-//
-//            this.username = username;
-//            this.password = password;
-//        }
-//
-//        @Override
-//        protected void runTask() {
-//            try {
-//                Pair<User, AuthToken> loginResult = doLogin();
-//
-//                User loggedInUser = loginResult.getFirst();
-//                AuthToken authToken = loginResult.getSecond();
-//
-//                BackgroundTaskUtils.loadImage(loggedInUser);
-//
-//                sendSuccessMessage(loggedInUser, authToken);
-//
-//            } catch (Exception ex) {
-//                Log.e(LOG_TAG, ex.getMessage(), ex);
-//                sendExceptionMessage(ex);
-//            }
-//        }
-//
-//        // This method is public so it can be accessed by test cases
-//        public FakeData getFakeData() {
-//            return new FakeData();
-//        }
-//
-//        // This method is public so it can be accessed by test cases
-//        public Pair<User, AuthToken> doLogin() {
-//            User loggedInUser = getFakeData().getFirstUser();
-//            AuthToken authToken = getFakeData().getAuthToken();
-//            return new Pair<>(loggedInUser, authToken);
-//        }
-//
-//        private void sendSuccessMessage(User loggedInUser, AuthToken authToken) {
-//            sendSuccessMessage(new BundleLoader() {
-//                @Override
-//                public void load(Bundle msgBundle) {
-//                    msgBundle.putSerializable(USER_KEY, loggedInUser);
-//                    msgBundle.putSerializable(AUTH_TOKEN_KEY, authToken);
-//                }
-//            });
-//        }
-//    }
+//                loginInToast.cancel();
+//                Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(), Toast.LENGTH_LONG).show();
+//                startActivity(intent);
+
+                observer.handleSuccess(loggedInUser, authToken);
+            } else if (msg.getData().containsKey(LoginTask.MESSAGE_KEY)) {
+                String message = msg.getData().getString(LoginTask.MESSAGE_KEY);
+//                Toast.makeText(getContext(), "Failed to login: " + message, Toast.LENGTH_LONG).show();
+                observer.handleFailure(message);
+            } else if (msg.getData().containsKey(LoginTask.EXCEPTION_KEY)) {
+                Exception ex = (Exception) msg.getData().getSerializable(LoginTask.EXCEPTION_KEY);
+//                Toast.makeText(getContext(), "Failed to login because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                observer.handleException(ex);
+            }
+        }
+    }
 }

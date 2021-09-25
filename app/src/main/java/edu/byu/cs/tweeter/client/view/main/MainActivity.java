@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
         AuthToken authToken = Cache.getInstance().getCurrUserAuthToken();
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), selectedUser, authToken);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), selectedUser);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(sectionsPagerAdapter);

@@ -36,13 +36,11 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     private static final int[] TAB_TITLES_OTHER_USERS = new int[]{R.string.storyTabTitle, R.string.followingTabTitle, R.string.followersTabTitle};
     private final Context mContext;
     private final User user;
-    private final AuthToken authToken;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm, User user, AuthToken authtoken) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm, User user) {
         super(fm);
         mContext = context;
         this.user = user;
-        this.authToken = authtoken;
     }
 
     @Override
@@ -54,7 +52,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             } else if (position == REGULAR_STORY_FRAGMENT_POSITION) {
                 return StoryFragment.newInstance(user);
             } else if (position == REGULAR_FOLLOWING_FRAGMENT_POSITION) {
-                return FollowingFragment.newInstance(user, authToken);
+                return FollowingFragment.newInstance(user);
             } else if (position == REGULAR_FOLLOWERS_FRAGMENT_POSITION) {
                 return FollowersFragment.newInstance(user);
             } else {
@@ -64,7 +62,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             if (position == OTHER_STORY_FRAGMENT_POSITION) {
                 return StoryFragment.newInstance(user);
             } else if (position == OTHER_FOLLOWING_FRAGMENT_POSITION) {
-                return FollowingFragment.newInstance(user, authToken);
+                return FollowingFragment.newInstance(user);
             } else if (position == OTHER_FOLLOWERS_FRAGMENT_POSITION) {
                 return FollowersFragment.newInstance(user);
             } else {
