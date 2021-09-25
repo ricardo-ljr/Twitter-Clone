@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersTask;
+import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -19,17 +20,34 @@ public class FollowerService {
 
     private static final int PAGE_SIZE = 10;
 
+    private final GetFollowersObserver observer;
+
     public interface GetFollowersObserver {
         void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower);
         void handleFailureFollower(String message);
         void handleExceptionFollower(Exception exception);
     }
 
-    public void getFollowers(GetFollowersObserver observer, User user, User lastFollower) {
-        GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
-                user, PAGE_SIZE, lastFollower, new GetFollowersHandler(observer));
+
+
+    public FollowerService(GetFollowersObserver observer) {
+        // An assertion would be better, but Android doesn't support Java assertions
+        if(observer == null) {
+            throw new NullPointerException();
+        }
+
+        this.observer = observer;
+    }
+
+    public void getFollowers(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
+        GetFollowersTask getFollowersTask = getGetFollowerTask(authToken, targetUser, limit, lastFollowee);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowersTask);
+    }
+
+    public GetFollowersTask getGetFollowerTask(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
+        return new GetFollowersTask(authToken, targetUser, limit, lastFollowee,
+                new GetFollowersHandler(Looper.getMainLooper(), observer));
     }
 
     /**
@@ -39,7 +57,8 @@ public class FollowerService {
 
         private GetFollowersObserver observer;
 
-        public GetFollowersHandler(GetFollowersObserver observer) {
+        public GetFollowersHandler(Looper looper, GetFollowersObserver observer) {
+            super(looper);
             this.observer = observer;
         }
 

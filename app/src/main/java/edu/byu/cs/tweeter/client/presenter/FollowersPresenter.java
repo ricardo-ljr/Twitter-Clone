@@ -4,13 +4,37 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowerService;
+import edu.byu.cs.tweeter.client.model.service.FollowingService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowersPresenter implements FollowerService.GetFollowersObserver, UserService.GetUserObserver {
 
     private static final String LOG_TAG = "FollowersPresenter";
     private static final int PAGE_SIZE = 10;
+
+
+    private final View view;
+    private final User targetUser;
+    private final AuthToken authToken;
+
+    private User lastFollowee;
+    private boolean hasMorePages = true;
+    private boolean isLoading = false;
+
+    public FollowersPresenter(View view, User user, AuthToken authToken) {
+        this.view = view;
+        this.targetUser = user;
+        this.authToken = authToken;
+    }
+
+    public interface View {
+        void addItems(List<User> followees);
+        void setLoading(boolean value);
+        void navigateToUser(User user);
+        void displayMessage(String message);
+    }
 
 
     @Override
@@ -34,13 +58,6 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
         view.displayMessage("Failed to get followers because of exception: " + exception.getMessage());
     }
 
-    private final View view;
-    private final User targetUser;
-
-    private User lastFollowee;
-    private boolean hasMorePages = true;
-    private boolean isLoading = false;
-
     @Override
     public void handleSuccessUser(User user) {
         view.navigateToUser(user);
@@ -56,19 +73,8 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
 
     }
 
-    public interface View {
-        void addItems(List<User> followees);
-        void setLoading(boolean value);
-        void navigateToUser(User user);
-        void displayMessage(String message);
-    }
 
-    public FollowersPresenter(View view, User user) {
-        this.view = view;
-        this.targetUser = user;
-    }
-
-    public void getUsers(String alias) {
+    public void getTargetUser(String alias) {
         UserService.getUsers(Cache.getInstance().getCurrUserAuthToken(), alias, this);
     }
 
@@ -109,8 +115,16 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
             isLoading = true;
             view.setLoading(true);
 
-            new FollowerService().getFollowers(this, targetUser, lastFollowee);
+            getFollowers(authToken, targetUser, PAGE_SIZE, lastFollowee);
         }
+    }
+
+    public void getFollowers(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
+        getFollowersService(this).getFollowers(authToken, targetUser, limit, lastFollowee);
+    }
+
+    public FollowerService getFollowersService(FollowerService.GetFollowersObserver observer) {
+        return new FollowerService(observer);
     }
 
 }

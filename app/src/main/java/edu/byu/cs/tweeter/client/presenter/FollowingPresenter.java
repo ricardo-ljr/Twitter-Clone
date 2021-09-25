@@ -5,12 +5,14 @@ import android.util.Log;
 
 import java.util.List;
 
+import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowingService;
+import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.view.main.following.FollowingFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowingPresenter implements FollowingService.GetFollowingObserver{
+public class FollowingPresenter implements FollowingService.GetFollowingObserver, UserService.GetUserObserver {
 
     private static final String LOG_TAG = "FollowingPresenter";
     private static final int PAGE_SIZE = 10;
@@ -23,10 +25,32 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
     private boolean hasMorePages = true;
     private boolean isLoading = false;
 
+    /**
+     * Creates an instance.
+     *
+     * @param view      the view for which this class is the presenter.
+     * @param targetUser      the user that is currently logged in.
+     * @param authToken the auth token for the current session.
+     */
     public FollowingPresenter(FollowingFragment view, User targetUser, AuthToken authToken) {
         this.view = view;
         this.targetUser = targetUser;
         this.authToken = authToken;
+    }
+
+    @Override
+    public void handleSuccessUser(User user) {
+        view.navigateToUser(user);
+    }
+
+    @Override
+    public void handleFailureUser(String message) {
+
+    }
+
+    @Override
+    public void handleExceptionUser(Exception exception) {
+
     }
 
     public interface View {
@@ -87,6 +111,10 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
         }
     }
 
+    public void getTargetUser(String alias) {
+        UserService.getUsers(Cache.getInstance().getCurrUserAuthToken(), alias, this);
+    }
+
     /**
      * Requests the users that the user specified in the request is following. Uses information in
      * the request object to limit the number of followees returned and to return the next set of
@@ -111,19 +139,6 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
      */
     public FollowingService getFollowingService(FollowingService.GetFollowingObserver observer) {
         return new FollowingService(observer);
-    }
-
-    /**
-     * Creates an instance.
-     *
-     * @param view      the view for which this class is the presenter.
-     * @param user      the user that is currently logged in.
-     * @param authToken the auth token for the current session.
-     */
-    public FollowingPresenter(View view, User user, AuthToken authToken, User targetUser) {
-        this.view = view;
-        this.authToken = authToken;
-        this.targetUser = targetUser;
     }
 
     @Override
