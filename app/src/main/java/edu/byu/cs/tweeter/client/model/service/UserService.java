@@ -1,16 +1,11 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Base64;
-import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -18,17 +13,12 @@ import java.io.ByteArrayOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
-import edu.byu.cs.tweeter.client.view.main.following.FollowingFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.FakeData;
-import edu.byu.cs.tweeter.util.Pair;
 
 /**
  * Contains the business logic to support the login operation.
@@ -40,12 +30,12 @@ public class UserService {
      * asynchronous operations complete.
      */
     public interface GetUserObserver {
-        void handleSuccess(User user);
-        void handleFailure(String message);
-        void handleException(Exception exception);
+        void handleSuccessUser(User user);
+        void handleFailureUser(String message);
+        void handleExceptionUser(Exception exception);
     }
 
-    public void getUsers(AuthToken authToken, String alias, GetUserObserver observer) {
+    public static void getUsers(AuthToken authToken, String alias, GetUserObserver observer) {
         GetUserTask getUserTask = new GetUserTask(authToken,
                 alias, new GetUserHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -56,7 +46,7 @@ public class UserService {
     /**
      * Message handler (i.e., observer) for GetUserTask.
      */
-    private class GetUserHandler extends Handler {
+    private static class GetUserHandler extends Handler {
 
         private GetUserObserver observer;
 
@@ -69,15 +59,15 @@ public class UserService {
             boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
             if (success) {
                 User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-                observer.handleSuccess(user);
+                observer.handleSuccessUser(user);
             } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
 //                Toast.makeText(getContext(), "Failed to get user's profile: " + message, Toast.LENGTH_LONG).show();
-                observer.handleFailure(message);
+                observer.handleFailureUser(message);
             } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
 //                Toast.makeText(getContext(), "Failed to get user's profile because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                observer.handleException(ex);
+                observer.handleExceptionUser(ex);
             }
         }
     }
