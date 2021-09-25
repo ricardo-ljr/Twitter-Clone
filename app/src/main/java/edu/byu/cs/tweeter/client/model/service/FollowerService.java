@@ -3,7 +3,6 @@ package edu.byu.cs.tweeter.client.model.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -12,39 +11,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersTask;
-import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.view.main.followers.FollowersFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowerService {
 
-    private final GetFollowersObserver observer;
+    private static final int PAGE_SIZE = 10;
 
     public interface GetFollowersObserver {
-        void handleSuccess(List<User> users, boolean hasMorePages, User lastFollower);
-        void handleFailure(String message);
-        void handleException(Exception exception);
+        void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower);
+        void handleFailureFollower(String message);
+        void handleExceptionFollower(Exception exception);
     }
 
-    public FollowerService(GetFollowersObserver observer) {
-        if(observer == null) {
-            throw new NullPointerException();
-        }
-
-        this.observer = observer;
-    }
-
-    public void getFollowers(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
-        GetFollowersTask getFollowersTask = getGetFollowersTask(authToken, targetUser, limit, lastFollowee);
+    public void getFollowers(GetFollowersObserver observer, User user, User lastFollower) {
+        GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
+                user, PAGE_SIZE, lastFollower, new GetFollowersHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowersTask);
-    }
-
-    public GetFollowersTask getGetFollowersTask(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
-        return new GetFollowersTask(authToken, targetUser, limit, lastFollowee,
-                new GetFollowersHandler(Looper.getMainLooper(), observer));
     }
 
     /**
@@ -54,8 +39,7 @@ public class FollowerService {
 
         private GetFollowersObserver observer;
 
-        public GetFollowersHandler(Looper looper, GetFollowersObserver observer) {
-            super(looper);
+        public GetFollowersHandler(GetFollowersObserver observer) {
             this.observer = observer;
         }
 
@@ -70,13 +54,13 @@ public class FollowerService {
                 boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
                 User lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
 
-                observer.handleSuccess(followers, hasMorePages, lastFollower);
+                observer.handleSuccessFollower(followers, hasMorePages, lastFollower);
             } else if (msg.getData().containsKey(GetFollowersTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
-                observer.handleFailure(message);
+                observer.handleFailureFollower(message);
             } else if (msg.getData().containsKey(GetFollowersTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(GetFollowersTask.EXCEPTION_KEY);
-                observer.handleException(ex);
+                observer.handleExceptionFollower(ex);
             }
         }
     }
