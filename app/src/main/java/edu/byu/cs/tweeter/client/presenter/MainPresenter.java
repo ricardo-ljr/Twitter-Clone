@@ -3,45 +3,18 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 
+import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.PostStatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.model.domain.User;
 
-public class MainPresenter implements UserService.LogoutObserver, PostStatusService.PostStatusObserver {
-
-    @Override
-    public void handleSucessLogout() {
-        view.logout();
-    }
-
-    @Override
-    public void handleFailureLogout(String message) {
-        view.displayErrorMessage("Failed to logout: " + message);
-    }
-
-    @Override
-    public void handleExceptionLogout(Exception e) {
-        view.displayErrorMessage("Failed to logout because of exception: " + e.getMessage());
-    }
+public class MainPresenter implements UserService.LogoutObserver, PostStatusService.PostStatusObserver, FollowService.FollowObserver, FollowService.UnfollowObserver,
+FollowService.GetFollowersCountObserver, FollowService.GetFollowingCountObserver, FollowService.IsFollowerObserver{
 
     private MainPresenter.View view;
 
     public MainPresenter(MainPresenter.View view) {
         this.view = view;
-    }
-
-    @Override
-    public void handleSuccessPostStatus(String message) {
-        view.displayInfoMessage(message);
-    }
-
-    @Override
-    public void handleFailurePostStatus(String message) {
-        view.displayErrorMessage("Failed to post status: " + message);
-    }
-
-    @Override
-    public void handleExceptionPostStatus(Exception e) {
-        view.displayErrorMessage("Failed to post status because of exception: " + e.getMessage());
     }
 
     public interface View {
@@ -68,6 +41,152 @@ public class MainPresenter implements UserService.LogoutObserver, PostStatusServ
     public void postStatus(String post) throws ParseException, MalformedURLException {
         view.displayInfoMessage("Posting Status...");
         new PostStatusService().postStatus(post, this);
+    }
+
+    public void isFollower() {
+        new FollowService().isFollower(this);
+    }
+
+    @Override
+    public void handleSucessLogout() {
+        view.logout();
+    }
+
+    @Override
+    public void handleFailureLogout(String message) {
+        view.displayErrorMessage("Failed to logout: " + message);
+    }
+
+    @Override
+    public void handleExceptionLogout(Exception e) {
+        view.displayErrorMessage("Failed to logout because of exception: " + e.getMessage());
+    }
+
+    @Override
+    public void handleSuccessPostStatus(String message) {
+        view.displayInfoMessage(message);
+    }
+
+    @Override
+    public void handleFailurePostStatus(String message) {
+        view.displayErrorMessage("Failed to post status: " + message);
+    }
+
+    @Override
+    public void handleExceptionPostStatus(Exception e) {
+        view.displayErrorMessage("Failed to post status because of exception: " + e.getMessage());
+    }
+
+    @Override
+    public void handleSuccessFollow(User user) {
+        view.displayInfoMessage("Adding " + user.getName() + "...");
+        new FollowService().follow(this, user);
+    }
+
+    @Override
+    public void handleFailureFollow(String message) {
+        view.displayErrorMessage("Failed to follow: " + message);
+    }
+
+    @Override
+    public void handleExceptionFollow(Exception e) {
+        view.displayErrorMessage("Failed to follow because of exception: " + e.getMessage());
+    }
+
+    @Override
+    public void handleSuccessUnfollow(User user) {
+        view.displayErrorMessage("Unfollowing " + user.getName() + "...");
+        new FollowService().unfollow(this, user);
+    }
+
+    @Override
+    public void handleFailureUnfollow(String message) {
+        view.displayErrorMessage("Failed to unfollow: " + message);
+    }
+
+    @Override
+    public void handleExceptionUnfollow(Exception e) {
+        view.displayErrorMessage("Failed to unfollow because of exception: " + e.getMessage());
+    }
+
+    @Override
+    public void setFollowButton(boolean enabled) {
+        view.setFollowButton(enabled);
+    }
+
+    @Override
+    public void handleUpdateFollowButton(boolean removed) {
+        view.updateFollowButton(removed);
+    }
+
+    @Override
+    public void updateSelectedUserFollowingAndFollowers(User user) {
+        new FollowService().updateSelectedUserFollowingAndFollowers(this, this, user);
+    }
+
+    @Override
+    public void handleSuccessGetFollowersCount(User user) {
+
+    }
+
+    @Override
+    public void handleFailureGetFollowersCount(String message) {
+        view.displayErrorMessage("Failed to get followers count: " + message);
+    }
+
+    @Override
+    public void handleExceptionGetFollowersCount(Exception e) {
+        view.displayErrorMessage("Failed to get followers count because of exception: " + e.getMessage());
+    }
+
+    @Override
+    public void setFollowersCount(int count) {
+        view.setFollowerCount(count);
+    }
+
+    @Override
+    public void handleSuccessGetFollowingCount(User user) {
+
+    }
+
+    @Override
+    public void handleFailureGetFollowingCount(String message) {
+        view.displayErrorMessage("Failed to get following count: " + message);
+    }
+
+    @Override
+    public void handleExceptionGetFollowingCount(Exception e) {
+        view.displayErrorMessage("Failed to get following count because of exception: " + e.getMessage());
+    }
+
+    @Override
+    public void setFollowingCount(int count) {
+        view.setFollowingCount(count);
+    }
+
+    @Override
+    public void handleSuccessIsFollow(User user) {
+
+    }
+
+    @Override
+    public void handleFailureIsFollow(String message) {
+        view.displayErrorMessage("Failed to determine following relationship: " + message);
+    }
+
+    @Override
+    public void handleExceptionIsFollow(Exception e) {
+        view.displayErrorMessage("Failed to determine following relationship because of exception: " + e.getMessage());
+    }
+
+    @Override
+    public void setIsFollowerButton() {
+        view.setIsFollowerButton();
+    }
+
+    @Override
+    public void setIsNotFollowerButton() {
+        view.setIsNotFollowerButton();
     }
 
 }
