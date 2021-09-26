@@ -19,7 +19,7 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowService {
+public class MainService {
     private static final int PAGE_SIZE = 10;
 
     // Follow

@@ -3,13 +3,13 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 
-import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.MainService;
 import edu.byu.cs.tweeter.client.model.service.PostStatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class MainPresenter implements UserService.LogoutObserver, PostStatusService.PostStatusObserver, FollowService.FollowObserver, FollowService.UnfollowObserver,
-FollowService.GetFollowersCountObserver, FollowService.GetFollowingCountObserver, FollowService.IsFollowerObserver{
+public class MainPresenter implements UserService.LogoutObserver, PostStatusService.PostStatusObserver, MainService.FollowObserver, MainService.UnfollowObserver,
+MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, MainService.IsFollowerObserver{
 
     private MainPresenter.View view;
 
@@ -44,7 +44,7 @@ FollowService.GetFollowersCountObserver, FollowService.GetFollowingCountObserver
     }
 
     public void isFollower() {
-        new FollowService().isFollower(this);
+        new MainService().isFollower(this);
     }
 
     @Override
@@ -80,7 +80,7 @@ FollowService.GetFollowersCountObserver, FollowService.GetFollowingCountObserver
     @Override
     public void handleSuccessFollow(User user) {
         view.displayInfoMessage("Adding " + user.getName() + "...");
-        new FollowService().follow(this, user);
+        new MainService().follow(this, user);
     }
 
     @Override
@@ -96,7 +96,7 @@ FollowService.GetFollowersCountObserver, FollowService.GetFollowingCountObserver
     @Override
     public void handleSuccessUnfollow(User user) {
         view.displayErrorMessage("Unfollowing " + user.getName() + "...");
-        new FollowService().unfollow(this, user);
+        new MainService().unfollow(this, user);
     }
 
     @Override
@@ -121,7 +121,7 @@ FollowService.GetFollowersCountObserver, FollowService.GetFollowingCountObserver
 
     @Override
     public void updateSelectedUserFollowingAndFollowers(User user) {
-        new FollowService().updateSelectedUserFollowingAndFollowers(this, this, user);
+        new MainService().updateSelectedUserFollowingAndFollowers(this, this, user);
     }
 
     @Override
