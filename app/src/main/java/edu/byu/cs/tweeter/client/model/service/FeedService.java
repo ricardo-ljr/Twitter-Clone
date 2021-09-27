@@ -20,9 +20,9 @@ public class FeedService {
     private static final int PAGE_SIZE = 10;
 
     public interface GetFeedObserver {
-        void handleSuccess(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException;
-        void handleFailure(String message);
-        void handleException(Exception e);
+        void handleSuccessFeed(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException;
+        void handleFailureFeed(String message);
+        void handleExceptionFeed(Exception e);
     }
 
     public static void getFeed(GetFeedObserver observer, User user, Status lastStatus) {
@@ -53,17 +53,17 @@ public class FeedService {
                 Status lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
 
                 try {
-                    observer.handleSuccess(statuses, hasMorePages, lastStatus);
+                    observer.handleSuccessFeed(statuses, hasMorePages, lastStatus);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
             } else if (msg.getData().containsKey(GetFeedTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetFeedTask.MESSAGE_KEY);
-                observer.handleFailure(message);
+                observer.handleFailureFeed(message);
 //                Toast.makeText(getContext(), "Failed to get feed: " + message, Toast.LENGTH_LONG).show();
             } else if (msg.getData().containsKey(GetFeedTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(GetFeedTask.EXCEPTION_KEY);
-                observer.handleException(ex);
+                observer.handleExceptionFeed(ex);
 //                Toast.makeText(getContext(), "Failed to get feed because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
             }
         }

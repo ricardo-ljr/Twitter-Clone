@@ -12,7 +12,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class FeedPresenter implements FeedService.GetFeedObserver, UserService.GetUserObserver {
 
     @Override
-    public void handleSuccess(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException {
+    public void handleSuccessFeed(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException {
         view.setLoading(false);
         view.addItems(statuses);
         this.hasMorePages = hasMorePages;
@@ -21,10 +21,10 @@ public class FeedPresenter implements FeedService.GetFeedObserver, UserService.G
     }
 
     @Override
-    public void handleFailure(String message) {}
+    public void handleFailureFeed(String message) {}
 
     @Override
-    public void handleException(Exception e) {}
+    public void handleExceptionFeed(Exception e) {}
 
     @Override
     public void handleSuccessUser(User user) {
