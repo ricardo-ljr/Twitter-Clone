@@ -104,7 +104,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
     @Override
     public void clearErrorMessage() {
-
+        Toast.makeText(getContext(), "", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -114,7 +114,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
     @Override
     public void clearInfoMessage() {
-
+        Toast.makeText(getContext(), "", Toast.LENGTH_LONG).show();
     }
 
 
