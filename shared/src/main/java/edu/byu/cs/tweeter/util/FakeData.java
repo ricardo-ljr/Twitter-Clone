@@ -23,6 +23,8 @@ public class FakeData {
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
     private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
 
+    // Cat url: https://thiscatdoesnotexist.com/
+
     /**
      * Generated users.
      */

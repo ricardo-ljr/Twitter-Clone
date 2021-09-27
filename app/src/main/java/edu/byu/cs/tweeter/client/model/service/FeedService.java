@@ -52,7 +52,6 @@ public class FeedService {
 
                 Status lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
 
-//                feedRecyclerViewAdapter.addItems(statuses);
                 try {
                     observer.handleSuccess(statuses, hasMorePages, lastStatus);
                 } catch (MalformedURLException e) {

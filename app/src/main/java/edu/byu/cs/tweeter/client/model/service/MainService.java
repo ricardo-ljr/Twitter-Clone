@@ -2,25 +2,21 @@ package edu.byu.cs.tweeter.client.model.service;
 
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.byu.cs.client.R;
 import edu.byu.cs.tweeter.client.backgroundTask.FollowTask;
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersCountTask;
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingCountTask;
 import edu.byu.cs.tweeter.client.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.backgroundTask.UnfollowTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class MainService {
-    private static final int PAGE_SIZE = 10;
 
     // Follow
 
@@ -45,7 +41,6 @@ public class MainService {
 
     public void updateSelectedUserFollowingAndFollowers(GetFollowersCountObserver followersCountObserver, GetFollowingCountObserver followingCountObserver, User targetUser) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
-
         // Get count of most recently selected user's followers.
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 targetUser, new GetFollowersCountHandler(followersCountObserver));
@@ -81,7 +76,6 @@ public class MainService {
                 observer.handleExceptionFollow(ex);
 //                Toast.makeText(MainActivity.this, "Failed to follow because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
             }
-
             observer.setFollowButton(true);
         }
     }
@@ -130,7 +124,6 @@ public class MainService {
                 observer.handleExceptionUnfollow(ex);
 //                Toast.makeText(MainActivity.this, "Failed to unfollow because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
             }
-
             observer.setFollowButton(true);
         }
     }

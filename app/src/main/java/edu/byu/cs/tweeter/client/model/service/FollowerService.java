@@ -11,14 +11,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersTask;
-import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingTask;
-import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowerService {
-
-    private static final int PAGE_SIZE = 10;
 
     private final GetFollowersObserver observer;
 
@@ -64,15 +60,11 @@ public class FollowerService {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-//            isLoading = false;
-//            removeLoadingFooter();
-
             boolean success = msg.getData().getBoolean(GetFollowersTask.SUCCESS_KEY);
             if (success) {
                 List<User> followers = (List<User>) msg.getData().getSerializable(GetFollowersTask.FOLLOWERS_KEY);
                 boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
                 User lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
-
                 observer.handleSuccessFollower(followers, hasMorePages, lastFollower);
             } else if (msg.getData().containsKey(GetFollowersTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
