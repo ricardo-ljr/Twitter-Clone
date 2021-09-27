@@ -64,14 +64,10 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
     }
 
     @Override
-    public void handleFailureUser(String message) {
-
-    }
+    public void handleFailureUser(String message) {}
 
     @Override
-    public void handleExceptionUser(Exception exception) {
-
-    }
+    public void handleExceptionUser(Exception exception) {}
 
 
     public void getTargetUser(String alias) {

@@ -54,14 +54,11 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
     }
 
     public interface View {
-
         void setLoading(boolean value);
         void navigateToUser(User user);
         void addItems(List<User> newUsers);
-
         void displayErrorMessage(String message);
         void clearErrorMessage();
-
         void displayInfoMessage(String message);
         void clearInfoMessage();
     }
@@ -145,7 +142,6 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
     public void handleSuccess(List<User> users, boolean hasMorePages) {
         setLastFollowee((users.size() > 0) ? users.get(users.size() - 1) : null);
         setHasMorePages(hasMorePages);
-
         view.setLoading(false);
         view.addItems(users);
         setLoading(false);
@@ -155,7 +151,6 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
     public void handleFailure(String message) {
         String errorMessage = "Failed to retrieve followees: " + message;
         Log.e(LOG_TAG, errorMessage);
-
         view.setLoading(false);
         view.displayErrorMessage(errorMessage);
         setLoading(false);

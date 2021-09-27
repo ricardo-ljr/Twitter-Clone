@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.FollowerService;
 import edu.byu.cs.tweeter.client.model.service.StoryService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -74,6 +75,4 @@ public class StoryPresenter implements StoryService.GetStoryObserver, UserServic
     public void getUsers(String alias) {
         UserService.getUsers(Cache.getInstance().getCurrUserAuthToken(), alias, this);
     }
-
-
 }

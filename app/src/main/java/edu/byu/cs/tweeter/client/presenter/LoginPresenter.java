@@ -50,6 +50,7 @@ public class LoginPresenter implements UserService.LoginObserver {
             view.displayErrorMessage("Login failed: " + message);
         }
     }
+
     public String validateLogin(String alias, String password) {
         if (alias.charAt(0) != '@') {
             return "Alias must begin with @.";
