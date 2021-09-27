@@ -43,7 +43,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
 
     private User user;
 
-    private boolean isLoading;
+    private boolean isLoading = false;
 
     private FollowersPresenter presenter;
 
@@ -338,7 +338,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
                 if ((visibleItemCount + firstVisibleItemPosition) >=
                         totalItemCount && firstVisibleItemPosition >= 0) {
                     // Run this code later on the UI thread
-                    presenter.loadMoreItems();
+                    loadMoreItems();
                 }
             }
         }

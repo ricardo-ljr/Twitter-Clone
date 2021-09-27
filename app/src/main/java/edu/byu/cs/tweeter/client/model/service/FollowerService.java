@@ -16,6 +16,8 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowerService {
 
+    private static final int PAGE_SIZE = 10;
+
     private final GetFollowersObserver observer;
 
     public interface GetFollowersObserver {
@@ -23,8 +25,6 @@ public class FollowerService {
         void handleFailureFollower(String message);
         void handleExceptionFollower(Exception exception);
     }
-
-
 
     public FollowerService(GetFollowersObserver observer) {
         // An assertion would be better, but Android doesn't support Java assertions
@@ -35,8 +35,8 @@ public class FollowerService {
         this.observer = observer;
     }
 
-    public void getFollowers(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
-        GetFollowersTask getFollowersTask = getGetFollowerTask(authToken, targetUser, limit, lastFollowee);
+    public void getFollowers(AuthToken authToken, User targetUser, User lastFollowee) {
+        GetFollowersTask getFollowersTask = getGetFollowerTask(authToken, targetUser, PAGE_SIZE, lastFollowee);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowersTask);
     }

@@ -42,8 +42,8 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
         view.setLoading(false);
         view.addItems(users);
         this.hasMorePages = hasMorePages;
+        this.lastFollowee = lastFollower;
         isLoading = false;
-
     }
 
     @Override
@@ -111,12 +111,12 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
             isLoading = true;
             view.setLoading(true);
 
-            getFollowers(authToken, targetUser, PAGE_SIZE, lastFollowee);
+            getFollowers(authToken, targetUser, lastFollowee);
         }
     }
 
-    public void getFollowers(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
-        getFollowersService(this).getFollowers(authToken, targetUser, limit, lastFollowee);
+    public void getFollowers(AuthToken authToken, User targetUser, User lastFollowee) {
+        getFollowersService(this).getFollowers(authToken, targetUser, lastFollowee);
     }
 
     public FollowerService getFollowersService(FollowerService.GetFollowersObserver observer) {

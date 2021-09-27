@@ -1,10 +1,8 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.model.service.FollowerService;
 import edu.byu.cs.tweeter.client.model.service.StoryService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -14,9 +12,10 @@ public class StoryPresenter implements StoryService.GetStoryObserver, UserServic
 
     @Override
     public void handleSuccessStory(List<Status> statuses, boolean hasMorePages, Status lastStatus) {
+        this.hasMorePages = hasMorePages;
         view.setLoading(false);
         view.addItems(statuses);
-        this.hasMorePages = hasMorePages;
+        this.lastStatus = lastStatus;
         isLoading = false;
     }
 
