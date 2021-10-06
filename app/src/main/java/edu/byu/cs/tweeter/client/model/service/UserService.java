@@ -2,12 +2,9 @@ package edu.byu.cs.tweeter.client.model.service;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Base64;
 import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.ExecutorService;

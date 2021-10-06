@@ -1,9 +1,6 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import android.os.Handler;
 import android.os.Message;
-
-import androidx.annotation.NonNull;
 
 import java.net.MalformedURLException;
 import java.text.ParseException;
@@ -12,8 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.PostStatusTask;
 import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
