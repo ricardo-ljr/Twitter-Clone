@@ -139,7 +139,7 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
     }
 
     @Override
-    public void handleSuccess(List<User> users, boolean hasMorePages) {
+    public void handleSuccessFollowing(List<User> users, boolean hasMorePages) {
         setLastFollowee((users.size() > 0) ? users.get(users.size() - 1) : null);
         setHasMorePages(hasMorePages);
         view.setLoading(false);

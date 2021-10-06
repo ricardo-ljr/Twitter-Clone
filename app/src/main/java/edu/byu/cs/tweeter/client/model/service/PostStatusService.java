@@ -16,15 +16,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.PostStatusTask;
+import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 
 public class PostStatusService {
 
-    public interface PostStatusObserver {
+    public interface PostStatusObserver extends ServiceObserver {
         void handleSuccessPostStatus(String message);
-        void handleFailurePostStatus(String message);
-        void handleExceptionPostStatus(Exception e);
+
     }
 
     public void postStatus(String post, PostStatusObserver observer) throws ParseException, MalformedURLException {
@@ -37,28 +38,23 @@ public class PostStatusService {
 
     // PostStatusHandler
 
-    private class PostStatusHandler extends Handler {
+    private class PostStatusHandler extends BackgroundTaskHandler {
 
         private PostStatusObserver observer;
 
         private PostStatusHandler(PostStatusObserver observer) {
+            super(observer);
             this.observer = observer;
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(PostStatusTask.SUCCESS_KEY);
-            if (success) {
-                observer.handleSuccessPostStatus("Successfully Posted!");
-            } else if (msg.getData().containsKey(PostStatusTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(PostStatusTask.MESSAGE_KEY);
-                observer.handleFailurePostStatus(message);
-//                Toast.makeText(MainActivity.this, "Failed to post status: " + message, Toast.LENGTH_LONG).show();
-            } else if (msg.getData().containsKey(PostStatusTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(PostStatusTask.EXCEPTION_KEY);
-                observer.handleExceptionPostStatus(ex);
-//                Toast.makeText(MainActivity.this, "Failed to post status because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
+        protected String getFailedMessagePrefix() {
+            return "Post Status: ";
+        }
+
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+            this.observer.handleSuccessPostStatus("Successfully Posted!");
         }
     }
 

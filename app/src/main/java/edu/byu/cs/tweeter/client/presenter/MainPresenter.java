@@ -17,6 +17,16 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
         this.view = view;
     }
 
+    @Override
+    public void handleFailure(String message) {
+        view.displayErrorMessage("Failed to: " + message);
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        view.displayInfoMessage("Failed because of exception: " + exception.getMessage());
+    }
+
     public interface View {
         void displayErrorMessage(String message);
         void displayInfoMessage(String message);
@@ -65,16 +75,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
     @Override
     public void handleSuccessPostStatus(String message) {
         view.displayInfoMessage(message);
-    }
-
-    @Override
-    public void handleFailurePostStatus(String message) {
-        view.displayErrorMessage("Failed to post status: " + message);
-    }
-
-    @Override
-    public void handleExceptionPostStatus(Exception e) {
-        view.displayErrorMessage("Failed to post status because of exception: " + e.getMessage());
     }
 
     @Override
