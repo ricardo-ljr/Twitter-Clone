@@ -63,13 +63,6 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
         view.navigateToUser(user);
     }
 
-    @Override
-    public void handleFailureUser(String message) {}
-
-    @Override
-    public void handleExceptionUser(Exception exception) {}
-
-
     public void getTargetUser(String alias) {
         UserService.getUsers(Cache.getInstance().getCurrUserAuthToken(), alias, this);
     }

@@ -31,16 +31,6 @@ public class FeedPresenter implements FeedService.GetFeedObserver, UserService.G
         view.navigateToUser(user);
     }
 
-    @Override
-    public void handleFailureUser(String message) {
-        view.displayMessage("Failed to get feed: " + message);
-    }
-
-    @Override
-    public void handleExceptionUser(Exception e) {
-
-    }
-
     private View view;
     private boolean isLoading = false;
     private boolean hasMorePages = true;

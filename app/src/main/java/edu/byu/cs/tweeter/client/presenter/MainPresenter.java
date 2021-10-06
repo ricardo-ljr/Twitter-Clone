@@ -63,16 +63,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
     }
 
     @Override
-    public void handleFailureLogout(String message) {
-        view.displayErrorMessage("Failed to logout: " + message);
-    }
-
-    @Override
-    public void handleExceptionLogout(Exception e) {
-        view.displayErrorMessage("Failed to logout because of exception: " + e.getMessage());
-    }
-
-    @Override
     public void handleSuccessPostStatus(String message) {
         view.displayInfoMessage(message);
     }

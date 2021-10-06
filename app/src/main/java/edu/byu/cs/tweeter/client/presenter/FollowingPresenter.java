@@ -43,16 +43,6 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
         view.navigateToUser(user);
     }
 
-    @Override
-    public void handleFailureUser(String message) {
-
-    }
-
-    @Override
-    public void handleExceptionUser(Exception exception) {
-
-    }
-
     public interface View {
         void setLoading(boolean value);
         void navigateToUser(User user);

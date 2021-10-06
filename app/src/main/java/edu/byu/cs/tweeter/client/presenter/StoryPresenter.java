@@ -34,15 +34,6 @@ public class StoryPresenter implements StoryService.GetStoryObserver, UserServic
         view.navigateToUser(user);
     }
 
-    @Override
-    public void handleFailureUser(String message) {
-
-    }
-
-    @Override
-    public void handleExceptionUser(Exception exception) {
-
-    }
 
     private StoryPresenter.View view;
     private boolean isLoading = false;

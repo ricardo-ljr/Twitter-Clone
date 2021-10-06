@@ -17,7 +17,9 @@ import edu.byu.cs.tweeter.client.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.backgroundTask.RegisterTask;
+import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -30,10 +32,8 @@ public class UserService {
      * An observer interface to be implemented by observers who want to be notified when
      * asynchronous operations complete.
      */
-    public interface GetUserObserver {
+    public interface GetUserObserver extends ServiceObserver {
         void handleSuccessUser(User user);
-        void handleFailureUser(String message);
-        void handleExceptionUser(Exception exception);
     }
 
     public static void getUsers(AuthToken authToken, String alias, GetUserObserver observer) {
@@ -47,72 +47,59 @@ public class UserService {
     /**
      * Message handler (i.e., observer) for GetUserTask.
      */
-    private static class GetUserHandler extends Handler {
+    private static class GetUserHandler extends BackgroundTaskHandler {
 
         private GetUserObserver observer;
 
         public GetUserHandler(GetUserObserver observer) {
+            super(observer);
             this.observer = observer;
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
-            if (success) {
-                User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-                observer.handleSuccessUser(user);
-            } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
-//                Toast.makeText(getContext(), "Failed to get user's profile: " + message, Toast.LENGTH_LONG).show();
-                observer.handleFailureUser(message);
-            } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
-//                Toast.makeText(getContext(), "Failed to get user's profile because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                observer.handleExceptionUser(ex);
-            }
+        protected String getFailedMessagePrefix() {
+            return "User Service";
+        }
+
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+            User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
+            this.observer.handleSuccessUser(user);
         }
     }
 
-    public interface RegisterObserver {
+    public interface RegisterObserver extends ServiceObserver {
         void handleSuccess(User user, AuthToken authToken);
-        void handleFailure(String message);
-        void handleException(Exception exception);
     }
 
     // RegisterHandler
 
-    private class RegisterHandler extends Handler {
+    private class RegisterHandler extends BackgroundTaskHandler {
 
         private UserService.RegisterObserver observer;
 
         public RegisterHandler(UserService.RegisterObserver observer) {
+            super(observer);
             this.observer = observer;
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(RegisterTask.SUCCESS_KEY);
-            if (success) {
-                User registeredUser = (User) msg.getData().getSerializable(RegisterTask.USER_KEY);
-                AuthToken authToken = (AuthToken) msg.getData().getSerializable(RegisterTask.AUTH_TOKEN_KEY);
+        protected String getFailedMessagePrefix() {
+            return "Register Service";
+        }
 
-                Cache.getInstance().setCurrUser(registeredUser);
-                Cache.getInstance().setCurrUserAuthToken(authToken);
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+            User registeredUser = (User) msg.getData().getSerializable(RegisterTask.USER_KEY);
+            AuthToken authToken = (AuthToken) msg.getData().getSerializable(RegisterTask.AUTH_TOKEN_KEY);
 
-//                Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(), Toast.LENGTH_LONG).show();
-                try {
-                    observer.handleSuccess(registeredUser, authToken);
-                } catch (Exception e) {
-                    observer.handleException(e);
-                }
-            } else if (msg.getData().containsKey(RegisterTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(RegisterTask.MESSAGE_KEY);
-                observer.handleFailure(message);
-//                Toast.makeText(getContext(), "Failed to register: " + message, Toast.LENGTH_LONG).show();
-            } else if (msg.getData().containsKey(RegisterTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(RegisterTask.EXCEPTION_KEY);
-                observer.handleException(ex);
-//                Toast.makeText(getContext(), "Failed to register because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            Cache.getInstance().setCurrUser(registeredUser);
+            Cache.getInstance().setCurrUserAuthToken(authToken);
+
+            try {
+                this.observer.handleSuccess(registeredUser, authToken);
+            } catch (Exception e) {
+                observer.handleException(e);
             }
         }
     }
@@ -131,10 +118,9 @@ public class UserService {
         executor.execute(registerTask);
     }
 
-    public interface LoginObserver {
+    // Login
+    public interface LoginObserver extends ServiceObserver {
         void handleSuccess(User user, AuthToken authToken);
-        void handleFailure(String message);
-        void handleException(Exception exception);
     }
 
     public void login(String alias, String password, LoginObserver observer) {
@@ -146,49 +132,35 @@ public class UserService {
     /**
      * Message handler (i.e., observer) for LoginTask
      */
-    private class LoginHandler extends Handler {
+    private class LoginHandler extends BackgroundTaskHandler {
 
         private LoginObserver observer;
 
         public LoginHandler(LoginObserver observer) {
+            super(observer);
             this.observer = observer;
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(LoginTask.SUCCESS_KEY);
-            if (success) {
-                User loggedInUser = (User) msg.getData().getSerializable(LoginTask.USER_KEY);
-                AuthToken authToken = (AuthToken) msg.getData().getSerializable(LoginTask.AUTH_TOKEN_KEY);
+        protected String getFailedMessagePrefix() {
+            return "Login Service";
+        }
 
-                // Cache user session information
-                Cache.getInstance().setCurrUser(loggedInUser);
-                Cache.getInstance().setCurrUserAuthToken(authToken);
-//
-//                Intent intent = new Intent(getContext(), MainActivity.class);
-//                intent.putExtra(MainActivity.CURRENT_USER_KEY, loggedInUser);
-//
-//                loginInToast.cancel();
-//                Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(), Toast.LENGTH_LONG).show();
-//                startActivity(intent);
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+            User loggedInUser = (User) msg.getData().getSerializable(LoginTask.USER_KEY);
+            AuthToken authToken = (AuthToken) msg.getData().getSerializable(LoginTask.AUTH_TOKEN_KEY);
 
-                observer.handleSuccess(loggedInUser, authToken);
-            } else if (msg.getData().containsKey(LoginTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(LoginTask.MESSAGE_KEY);
-//                Toast.makeText(getContext(), "Failed to login: " + message, Toast.LENGTH_LONG).show();
-                observer.handleFailure(message);
-            } else if (msg.getData().containsKey(LoginTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(LoginTask.EXCEPTION_KEY);
-//                Toast.makeText(getContext(), "Failed to login because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                observer.handleException(ex);
-            }
+            Cache.getInstance().setCurrUser(loggedInUser);
+            Cache.getInstance().setCurrUserAuthToken(authToken);
+
+            this.observer.handleSuccess(loggedInUser, authToken);
         }
     }
 
-    public interface LogoutObserver {
+    // Logout
+    public interface LogoutObserver extends ServiceObserver{
         void handleSucessLogout();
-        void handleFailureLogout(String message);
-        void handleExceptionLogout(Exception e);
     }
 
     public void logout(UserService.LogoutObserver observer) {
@@ -199,27 +171,22 @@ public class UserService {
 
     // LogoutHandler
 
-    private class LogoutHandler extends Handler {
+    private class LogoutHandler extends BackgroundTaskHandler {
         private UserService.LogoutObserver observer;
 
         public LogoutHandler(UserService.LogoutObserver observer) {
+            super(observer);
             this.observer = observer;
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(LogoutTask.SUCCESS_KEY);
-            if (success) {
-                observer.handleSucessLogout();
-            } else if (msg.getData().containsKey(LogoutTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(LogoutTask.MESSAGE_KEY);
-//                Toast.makeText(MainActivity.this, "Failed to logout: " + message, Toast.LENGTH_LONG).show();
-                observer.handleFailureLogout(message);
-            } else if (msg.getData().containsKey(LogoutTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(LogoutTask.EXCEPTION_KEY);
-//                Toast.makeText(MainActivity.this, "Failed to logout because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                observer.handleExceptionLogout(ex);
-            }
+        protected String getFailedMessagePrefix() {
+            return "Logout Service";
+        }
+
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+            this.observer.handleSucessLogout();
         }
     }
 }
