@@ -34,8 +34,7 @@ public class FollowerService {
 
     public void getFollowers(AuthToken authToken, User targetUser, User lastFollowee) {
         GetFollowersTask getFollowersTask = getGetFollowerTask(authToken, targetUser, PAGE_SIZE, lastFollowee);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowersTask);
+        new Executor<>(getFollowersTask);
     }
 
     public GetFollowersTask getGetFollowerTask(AuthToken authToken, User targetUser, int limit, User lastFollowee) {

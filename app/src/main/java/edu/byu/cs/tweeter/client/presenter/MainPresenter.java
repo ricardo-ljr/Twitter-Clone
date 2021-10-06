@@ -74,29 +74,9 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
     }
 
     @Override
-    public void handleFailureFollow(String message) {
-        view.displayErrorMessage("Failed to follow: " + message);
-    }
-
-    @Override
-    public void handleExceptionFollow(Exception e) {
-        view.displayErrorMessage("Failed to follow because of exception: " + e.getMessage());
-    }
-
-    @Override
     public void handleSuccessUnfollow(User user) {
         view.displayErrorMessage("Unfollowing " + user.getName() + "...");
         new MainService().unfollow(this, user);
-    }
-
-    @Override
-    public void handleFailureUnfollow(String message) {
-        view.displayErrorMessage("Failed to unfollow: " + message);
-    }
-
-    @Override
-    public void handleExceptionUnfollow(Exception e) {
-        view.displayErrorMessage("Failed to unfollow because of exception: " + e.getMessage());
     }
 
     @Override
@@ -120,16 +100,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
     }
 
     @Override
-    public void handleFailureGetFollowersCount(String message) {
-        view.displayErrorMessage("Failed to get followers count: " + message);
-    }
-
-    @Override
-    public void handleExceptionGetFollowersCount(Exception e) {
-        view.displayErrorMessage("Failed to get followers count because of exception: " + e.getMessage());
-    }
-
-    @Override
     public void setFollowersCount(int count) {
         view.setFollowerCount(count);
     }
@@ -140,16 +110,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
     }
 
     @Override
-    public void handleFailureGetFollowingCount(String message) {
-        view.displayErrorMessage("Failed to get following count: " + message);
-    }
-
-    @Override
-    public void handleExceptionGetFollowingCount(Exception e) {
-        view.displayErrorMessage("Failed to get following count because of exception: " + e.getMessage());
-    }
-
-    @Override
     public void setFollowingCount(int count) {
         view.setFollowingCount(count);
     }
@@ -157,16 +117,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
     @Override
     public void handleSuccessIsFollow(User user) {
 
-    }
-
-    @Override
-    public void handleFailureIsFollow(String message) {
-        view.displayErrorMessage("Failed to determine following relationship: " + message);
-    }
-
-    @Override
-    public void handleExceptionIsFollow(Exception e) {
-        view.displayErrorMessage("Failed to determine following relationship because of exception: " + e.getMessage());
     }
 
     @Override

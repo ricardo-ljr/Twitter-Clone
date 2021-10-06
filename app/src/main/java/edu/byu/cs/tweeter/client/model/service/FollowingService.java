@@ -57,9 +57,7 @@ public class FollowingService {
      */
     public void getFollowing(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
         GetFollowingTask getFollowingTask = getGetFollowingTask(authToken, targetUser, limit, lastFollowee);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowingTask);
-//        BackgroundTaskUtils.runTask(getFollowingTask);
+        new Executor<>(getFollowingTask);
     }
 
     /**

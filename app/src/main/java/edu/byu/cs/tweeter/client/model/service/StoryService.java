@@ -27,8 +27,7 @@ public class StoryService {
     public static void getStory(GetStoryObserver observer, User user, Status lastStatus) {
         GetStoryTask getStoryTask = new GetStoryTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, PAGE_SIZE, lastStatus, new GetStoryHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getStoryTask);
+        new Executor<>(getStoryTask);
     }
 
     /**

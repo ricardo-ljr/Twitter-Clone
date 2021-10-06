@@ -28,8 +28,7 @@ public class FeedService {
     public static void getFeed(GetFeedObserver observer, User user, Status lastStatus) {
         GetFeedTask getFeedTask = new GetFeedTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, PAGE_SIZE, lastStatus, new GetFeedHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFeedTask);
+        new Executor<>(getFeedTask);
     }
 
     /**
@@ -40,10 +39,9 @@ public class FeedService {
         private GetFeedObserver observer;
 
         public GetFeedHandler(GetFeedObserver observer) {
-            super((ServiceObserver) observer);
+            super(observer);
             this.observer = observer;
         }
-
 
         @Override
         protected String getFailedMessagePrefix() {

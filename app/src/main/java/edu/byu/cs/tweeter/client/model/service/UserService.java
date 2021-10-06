@@ -39,9 +39,7 @@ public class UserService {
     public static void getUsers(AuthToken authToken, String alias, GetUserObserver observer) {
         GetUserTask getUserTask = new GetUserTask(authToken,
                 alias, new GetUserHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getUserTask);
-//        Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
+        new Executor<>(getUserTask);
     }
 
     /**
@@ -125,8 +123,7 @@ public class UserService {
 
     public void login(String alias, String password, LoginObserver observer) {
         LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(loginTask);
+        new Executor<>(loginTask);
     }
 
     /**
@@ -165,8 +162,7 @@ public class UserService {
 
     public void logout(UserService.LogoutObserver observer) {
         LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new UserService.LogoutHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(logoutTask);
+        new Executor<>(logoutTask);
     }
 
     // LogoutHandler
