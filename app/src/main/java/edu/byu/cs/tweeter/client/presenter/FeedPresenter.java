@@ -21,10 +21,10 @@ public class FeedPresenter implements FeedService.GetFeedObserver, UserService.G
     }
 
     @Override
-    public void handleFailureFeed(String message) {}
+    public void handleFailure(String message) {}
 
     @Override
-    public void handleExceptionFeed(Exception e) {}
+    public void handleException(Exception e) {}
 
     @Override
     public void handleSuccessUser(User user) {

@@ -11,7 +11,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetFeedTask;
+import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -19,10 +21,8 @@ public class FeedService {
 
     private static final int PAGE_SIZE = 10;
 
-    public interface GetFeedObserver {
+    public interface GetFeedObserver extends ServiceObserver {
         void handleSuccessFeed(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException;
-        void handleFailureFeed(String message);
-        void handleExceptionFeed(Exception e);
     }
 
     public static void getFeed(GetFeedObserver observer, User user, Status lastStatus) {
@@ -35,37 +35,32 @@ public class FeedService {
     /**
      * Message handler (i.e., observer) for GetFeedTask.
      */
-    private static class GetFeedHandler extends Handler {
+    private static class GetFeedHandler extends BackgroundTaskHandler {
 
         private GetFeedObserver observer;
 
         public GetFeedHandler(GetFeedObserver observer) {
+            super((ServiceObserver) observer);
             this.observer = observer;
         }
 
+
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(GetFeedTask.SUCCESS_KEY);
-            if (success) {
-                List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetFeedTask.ITEMS_KEY);
-                boolean hasMorePages = msg.getData().getBoolean(GetFeedTask.MORE_PAGES_KEY);
+        protected String getFailedMessagePrefix() {
+            return "Feed Service";
+        }
 
-                Status lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+            List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetFeedTask.ITEMS_KEY);
+            boolean hasMorePages = msg.getData().getBoolean(GetFeedTask.MORE_PAGES_KEY);
+            Status lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
 
-                try {
-                    observer.handleSuccessFeed(statuses, hasMorePages, lastStatus);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    observer.handleExceptionFeed(e);
-                }
-            } else if (msg.getData().containsKey(GetFeedTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(GetFeedTask.MESSAGE_KEY);
-                observer.handleFailureFeed(message);
-//                Toast.makeText(getContext(), "Failed to get feed: " + message, Toast.LENGTH_LONG).show();
-            } else if (msg.getData().containsKey(GetFeedTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(GetFeedTask.EXCEPTION_KEY);
-                observer.handleExceptionFeed(ex);
-//                Toast.makeText(getContext(), "Failed to get feed because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            try {
+                this.observer.handleSuccessFeed(statuses, hasMorePages, lastStatus);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                observer.handleException(e);
             }
         }
     }
