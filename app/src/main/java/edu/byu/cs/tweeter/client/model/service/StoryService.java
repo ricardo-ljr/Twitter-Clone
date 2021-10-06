@@ -10,7 +10,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetStoryTask;
+import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -18,10 +20,8 @@ public class StoryService {
 
     private static final int PAGE_SIZE = 10;
 
-    public interface GetStoryObserver {
+    public interface GetStoryObserver extends ServiceObserver {
         void handleSuccessStory(List<Status> statuses, boolean hasMorePages, Status lastStatus);
-        void handleFailureStory(String message);
-        void handleExceptionStory(Exception e);
     }
 
     public static void getStory(GetStoryObserver observer, User user, Status lastStatus) {
@@ -34,33 +34,28 @@ public class StoryService {
     /**
      * Message handler (i.e., observer) for GetStoryTask.
      */
-    private static class GetStoryHandler extends Handler {
+    private static class GetStoryHandler extends BackgroundTaskHandler {
 
         private GetStoryObserver observer;
 
         public GetStoryHandler(GetStoryObserver observer) {
+            super(observer);
             this.observer = observer;
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(GetStoryTask.SUCCESS_KEY);
-            if (success) {
-                List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetStoryTask.ITEMS_KEY);
-                boolean hasMorePages = msg.getData().getBoolean(GetStoryTask.MORE_PAGES_KEY);
+        protected String getFailedMessagePrefix() {
+            return "Story Service";
+        }
 
-                Status lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+            List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetStoryTask.ITEMS_KEY);
+            boolean hasMorePages = msg.getData().getBoolean(GetStoryTask.MORE_PAGES_KEY);
 
-                observer.handleSuccessStory(statuses, hasMorePages, lastStatus);
-            } else if (msg.getData().containsKey(GetStoryTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(GetStoryTask.MESSAGE_KEY);
-                observer.handleFailureStory(message);
-//                Toast.makeText(getContext(), "Failed to get story: " + message, Toast.LENGTH_LONG).show();
-            } else if (msg.getData().containsKey(GetStoryTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(GetStoryTask.EXCEPTION_KEY);
-                observer.handleExceptionStory(ex);
-//                Toast.makeText(getContext(), "Failed to get story because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            Status lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
+
+            this.observer.handleSuccessStory(statuses, hasMorePages, lastStatus);
         }
     }
 }

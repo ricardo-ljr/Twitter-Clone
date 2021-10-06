@@ -20,12 +20,12 @@ public class StoryPresenter implements StoryService.GetStoryObserver, UserServic
     }
 
     @Override
-    public void handleFailureStory(String message) {
+    public void handleFailure(String message) {
         view.displayMessage("Failed to get story: " + message);
     }
 
     @Override
-    public void handleExceptionStory(Exception e) {
+    public void handleException(Exception e) {
         view.displayMessage("Failed to get story because of exception: " + e.getMessage());
     }
 
