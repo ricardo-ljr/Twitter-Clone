@@ -93,7 +93,7 @@ public class FollowingService {
             Bundle bundle = message.getData();
             boolean success = bundle.getBoolean(GetFollowingTask.SUCCESS_KEY);
             if (success) {
-                List<User> followees = (List<User>) bundle.getSerializable(GetFollowingTask.FOLLOWEES_KEY);
+                List<User> followees = (List<User>) bundle.getSerializable(GetFollowingTask.ITEMS_KEY);
                 boolean hasMorePages = bundle.getBoolean(GetFollowingTask.MORE_PAGES_KEY);
                 observer.handleSuccess(followees, hasMorePages);
             } else if (bundle.containsKey(GetFollowingTask.MESSAGE_KEY)) {

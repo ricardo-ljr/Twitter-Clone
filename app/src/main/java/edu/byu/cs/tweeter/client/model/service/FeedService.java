@@ -47,7 +47,7 @@ public class FeedService {
         public void handleMessage(@NonNull Message msg) {
             boolean success = msg.getData().getBoolean(GetFeedTask.SUCCESS_KEY);
             if (success) {
-                List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetFeedTask.STATUSES_KEY);
+                List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetFeedTask.ITEMS_KEY);
                 boolean hasMorePages = msg.getData().getBoolean(GetFeedTask.MORE_PAGES_KEY);
 
                 Status lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
@@ -56,6 +56,7 @@ public class FeedService {
                     observer.handleSuccessFeed(statuses, hasMorePages, lastStatus);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
+                    observer.handleExceptionFeed(e);
                 }
             } else if (msg.getData().containsKey(GetFeedTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetFeedTask.MESSAGE_KEY);
