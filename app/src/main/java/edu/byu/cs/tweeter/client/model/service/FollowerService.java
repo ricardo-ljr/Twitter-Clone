@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.model.service;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -11,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersTask;
+import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -20,10 +23,8 @@ public class FollowerService {
 
     private final GetFollowersObserver observer;
 
-    public interface GetFollowersObserver {
+    public interface GetFollowersObserver extends ServiceObserver {
         void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower);
-        void handleFailureFollower(String message);
-        void handleExceptionFollower(Exception exception);
     }
 
     public FollowerService(GetFollowersObserver observer) {
@@ -43,37 +44,37 @@ public class FollowerService {
 
     public GetFollowersTask getGetFollowerTask(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
         return new GetFollowersTask(authToken, targetUser, limit, lastFollowee,
-                new GetFollowersHandler(Looper.getMainLooper(), observer));
+                new GetFollowersHandler(observer));
     }
 
     /**
      * Message handler (i.e., observer) for GetFollowersTask.
      */
-    private class GetFollowersHandler extends Handler {
+    private class GetFollowersHandler extends BackgroundTaskHandler {
 
         private GetFollowersObserver observer;
 
-        public GetFollowersHandler(Looper looper, GetFollowersObserver observer) {
-            super(looper);
+        public GetFollowersHandler(GetFollowersObserver observer) {
+            super(observer);
             this.observer = observer;
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(GetFollowersTask.SUCCESS_KEY);
-            if (success) {
-                List<User> followers = (List<User>) msg.getData().getSerializable(GetFollowersTask.ITEMS_KEY);
-                boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
-                User lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
-                observer.handleSuccessFollower(followers, hasMorePages, lastFollower);
-            } else if (msg.getData().containsKey(GetFollowersTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
-                observer.handleFailureFollower(message);
-            } else if (msg.getData().containsKey(GetFollowersTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(GetFollowersTask.EXCEPTION_KEY);
-                observer.handleExceptionFollower(ex);
-            }
+        protected String getFailedMessagePrefix() {
+            return "Follower Service";
         }
+
+        @Override
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+
+            List<User> followers = (List<User>) msg.getData().getSerializable(GetFollowersTask.ITEMS_KEY);
+            boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
+            User lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
+
+            this.observer.handleSuccessFollower(followers, hasMorePages, lastFollower);
+
+        }
+
     }
 
 }

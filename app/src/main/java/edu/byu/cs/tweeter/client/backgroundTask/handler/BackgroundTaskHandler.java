@@ -22,7 +22,7 @@ public abstract class BackgroundTaskHandler<T extends ServiceObserver> extends H
     public void handleMessage(@NonNull Message msg) {
         boolean success = msg.getData().getBoolean(BackgroundTask.SUCCESS_KEY);
         if (success) {
-            handleSuccessMessage(observer, msg.getData());
+            handleSuccessMessage(observer, msg);
         } else if (msg.getData().containsKey(BackgroundTask.MESSAGE_KEY)) {
             String message = getFailedMessagePrefix() + ": " + msg.getData().getString(GetFollowersCountTask.MESSAGE_KEY);
             observer.handleFailure(message);
@@ -35,5 +35,5 @@ public abstract class BackgroundTaskHandler<T extends ServiceObserver> extends H
 
     protected abstract String getFailedMessagePrefix();
 
-    protected abstract void handleSuccessMessage(T observer, Bundle data);
+    protected abstract void handleSuccessMessage(T observer, Message msg);
 }

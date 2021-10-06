@@ -47,13 +47,13 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
     }
 
     @Override
-    public void handleFailureFollower(String message) {
+    public void handleFailure(String message) {
 //        Toast.makeText(getContext(), "Failed to get followers: " + message, Toast.LENGTH_LONG).show();
         view.displayMessage("Failed to get followers: " + message);
     }
 
     @Override
-    public void handleExceptionFollower(Exception exception) {
+    public void handleException(Exception exception) {
 //        Toast.makeText(getContext(), "Failed to get followers because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         view.displayMessage("Failed to get followers because of exception: " + exception.getMessage());
     }
