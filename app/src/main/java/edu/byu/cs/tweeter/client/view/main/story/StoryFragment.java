@@ -122,13 +122,28 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
     }
 
     @Override
-    public void displayMessage(String message) {
+    public void addItems(List<Status> statuses) {
+        storyRecyclerViewAdapter.addItems(statuses);
+    }
+
+    @Override
+    public void displayErrorMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void addItems(List<Status> statuses) {
-        storyRecyclerViewAdapter.addItems(statuses);
+    public void clearErrorMessage() {
+
+    }
+
+    @Override
+    public void displayInfoMessage(String message) {
+
+    }
+
+    @Override
+    public void clearInfoMessage() {
+
     }
 
     /**

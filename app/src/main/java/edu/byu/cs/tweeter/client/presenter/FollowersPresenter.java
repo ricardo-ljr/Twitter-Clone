@@ -29,11 +29,10 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
         this.authToken = authToken;
     }
 
-    public interface View {
+    public interface View extends ServiceView {
         void addItems(List<User> followees);
         void setLoading(boolean value);
         void navigateToUser(User user);
-        void displayMessage(String message);
     }
 
 
@@ -49,13 +48,13 @@ public class FollowersPresenter implements FollowerService.GetFollowersObserver,
     @Override
     public void handleFailure(String message) {
 //        Toast.makeText(getContext(), "Failed to get followers: " + message, Toast.LENGTH_LONG).show();
-        view.displayMessage("Failed to get followers: " + message);
+        view.displayErrorMessage("Failed to get followers: " + message);
     }
 
     @Override
     public void handleException(Exception exception) {
 //        Toast.makeText(getContext(), "Failed to get followers because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-        view.displayMessage("Failed to get followers because of exception: " + exception.getMessage());
+        view.displayErrorMessage("Failed to get followers because of exception: " + exception.getMessage());
     }
 
     @Override

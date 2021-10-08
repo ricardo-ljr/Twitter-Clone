@@ -22,12 +22,8 @@ public class LoginPresenter implements UserService.LoginObserver {
         view.displayErrorMessage("Login failed: " + exception.getMessage());
     }
 
-    public interface View {
+    public interface View extends ServiceView{
         void navigateToUser(User user);
-        void displayErrorMessage(String message);
-        void clearErrorMessage();
-        void displayInfoMessage(String message);
-        void clearInfoMessage();
     }
 
     private View view;

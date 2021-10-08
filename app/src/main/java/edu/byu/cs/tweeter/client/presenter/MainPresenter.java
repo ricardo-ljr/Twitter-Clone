@@ -27,18 +27,13 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
         view.displayInfoMessage("Failed because of exception: " + exception.getMessage());
     }
 
-    public interface View {
-        void displayErrorMessage(String message);
-        void displayInfoMessage(String message);
+    public interface View extends ServiceView{
 
         void logout();
-
         void updateFollowButton(boolean removed);
         void setFollowButton(boolean enabled);
-
         void setFollowerCount(int count);
         void setFollowingCount(int count);
-
         void setIsFollowerButton();
         void setIsNotFollowerButton();
     }

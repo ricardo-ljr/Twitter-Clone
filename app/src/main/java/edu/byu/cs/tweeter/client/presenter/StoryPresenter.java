@@ -21,12 +21,12 @@ public class StoryPresenter implements StoryService.GetStoryObserver, UserServic
 
     @Override
     public void handleFailure(String message) {
-        view.displayMessage("Failed to get story: " + message);
+        view.displayErrorMessage("Failed to get story: " + message);
     }
 
     @Override
     public void handleException(Exception e) {
-        view.displayMessage("Failed to get story because of exception: " + e.getMessage());
+        view.displayErrorMessage("Failed to get story because of exception: " + e.getMessage());
     }
 
     @Override
@@ -34,17 +34,15 @@ public class StoryPresenter implements StoryService.GetStoryObserver, UserServic
         view.navigateToUser(user);
     }
 
-
     private StoryPresenter.View view;
     private boolean isLoading = false;
     private boolean hasMorePages = true;
     private User user;
     private Status lastStatus = null;
 
-    public interface View {
+    public interface View extends ServiceView{
         void navigateToUser(User user);
         void setLoading(boolean value);
-        void displayMessage(String message);
         void addItems(List<Status> statuses);
     }
 

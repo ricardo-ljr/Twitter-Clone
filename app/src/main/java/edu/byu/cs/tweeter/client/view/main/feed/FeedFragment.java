@@ -126,14 +126,23 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
     }
 
     @Override
-    public void displayMessage(String message) {
+    public void addItems(List<Status> statuses) {
+        feedRecyclerViewAdapter.addItems(statuses);
+    }
+
+    @Override
+    public void displayErrorMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void addItems(List<Status> statuses) {
-        feedRecyclerViewAdapter.addItems(statuses);
-    }
+    public void clearErrorMessage() { }
+
+    @Override
+    public void displayInfoMessage(String message) { }
+
+    @Override
+    public void clearInfoMessage() { }
 
     /**
      * The ViewHolder for the RecyclerView that displays the feed data.

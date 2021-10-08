@@ -37,10 +37,9 @@ public class FeedPresenter implements FeedService.GetFeedObserver, UserService.G
     private User user;
     private Status lastStatus = null;
 
-    public interface View {
+    public interface View extends ServiceView {
         void navigateToUser(User user);
         void setLoading(boolean value) throws MalformedURLException;
-        void displayMessage(String message);
         void addItems(List<Status> statuses);
     }
 

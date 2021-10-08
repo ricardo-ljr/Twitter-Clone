@@ -152,8 +152,18 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
     }
 
     @Override
+    public void clearErrorMessage() {
+
+    }
+
+    @Override
     public void displayInfoMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void clearInfoMessage() {
+
     }
 
     @Override

@@ -26,13 +26,9 @@ public class RegisterPresenter implements UserService.RegisterObserver {
 
     private RegisterPresenter.View view;
 
-    public interface View {
+    public interface View extends ServiceView {
         void navigateToUser(User user);
         void uploadingImage();
-        void displayErrorMessage(String message);
-        void clearErrorMessage();
-        void displayInfoMessage(String message);
-        void clearInfoMessage();
     }
 
     public RegisterPresenter(View view) {

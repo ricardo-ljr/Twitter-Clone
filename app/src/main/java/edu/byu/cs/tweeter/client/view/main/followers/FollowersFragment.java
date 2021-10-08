@@ -123,9 +123,18 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
     }
 
     @Override
-    public void displayMessage(String message) {
+    public void displayErrorMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void clearErrorMessage() { }
+
+    @Override
+    public void displayInfoMessage(String message) { }
+
+    @Override
+    public void clearInfoMessage() { }
 
 
     /**

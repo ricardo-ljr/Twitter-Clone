@@ -43,14 +43,10 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
         view.navigateToUser(user);
     }
 
-    public interface View {
+    public interface View extends ServiceView{
         void setLoading(boolean value);
         void navigateToUser(User user);
         void addItems(List<User> newUsers);
-        void displayErrorMessage(String message);
-        void clearErrorMessage();
-        void displayInfoMessage(String message);
-        void clearInfoMessage();
     }
 
     public View getView() {
