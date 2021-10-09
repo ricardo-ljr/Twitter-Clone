@@ -9,52 +9,32 @@ import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FeedPresenter implements FeedService.GetFeedObserver, UserService.GetUserObserver {
+public class FeedPresenter extends PagedPresenterStatus implements FeedService.GetFeedObserver, UserService.GetUserObserver {
+
+    public interface View extends PagedView<Status>{ }
+
+    public FeedPresenter(View view, User user) {
+        super(view, user);
+    }
 
     @Override
     public void handleSuccessFeed(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException {
-        view.setLoading(false);
-        view.addItems(statuses);
-        this.hasMorePages = hasMorePages;
-        this.lastStatus = lastStatus;
-        isLoading = false;
+        handleSuccess(statuses, hasMorePages, lastStatus);
     }
 
-    @Override
-    public void handleFailure(String message) {}
-
-    @Override
-    public void handleException(Exception e) {}
-
-    @Override
-    public void handleSuccessUser(User user) {
-        view.navigateToUser(user);
-    }
-
-    private View view;
-    private boolean isLoading = false;
-    private boolean hasMorePages = true;
-    private User user;
-    private Status lastStatus = null;
-
-    public interface View extends ServiceView {
-        void navigateToUser(User user);
-        void setLoading(boolean value) throws MalformedURLException;
-        void addItems(List<Status> statuses);
-    }
-
-    public FeedPresenter(View view, User user) {
-        this.view = view;
-        this.user = user;
-    }
-
+    // Overriding previous loadMoreItems with abstract loaditems() method
     public void loadMoreItems() throws MalformedURLException {
-        if (!isLoading && hasMorePages) {
-            isLoading = true;
-            view.setLoading(true);
-
-            new FeedService().getFeed(this, user, lastStatus);
+        if(loadItems()) {
+            getFeed(this, getUser(), getLastStatus());
         }
+    }
+
+    public void getFeed(FeedService.GetFeedObserver observer, User targetUser, Status lastStatus) {
+        getFeedService(this).getFeed(observer,targetUser, lastStatus);
+    }
+
+    public FeedService getFeedService(FeedService.GetFeedObserver observer) {
+        return new FeedService(observer);
     }
 
     public void getUsers(String alias) {

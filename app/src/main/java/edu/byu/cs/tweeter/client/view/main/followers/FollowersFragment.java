@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +96,11 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
         // Run this code later on the UI thread
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
-            presenter.loadMoreItems();
+            try {
+                presenter.loadMoreItems();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }, 0);
     }
 
@@ -161,7 +166,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    presenter.getTargetUser(userAlias.getText().toString());
+                    presenter.getUsers(userAlias.getText().toString());
                     Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                 }
             });

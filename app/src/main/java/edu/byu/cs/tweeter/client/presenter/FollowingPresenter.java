@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import android.util.Log;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
@@ -12,13 +13,11 @@ import edu.byu.cs.tweeter.client.view.main.following.FollowingFragment;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowingPresenter implements FollowingService.GetFollowingObserver, UserService.GetUserObserver {
+public class FollowingPresenter extends PagedPresenterUser implements FollowingService.GetFollowingObserver, UserService.GetUserObserver {
 
     private static final String LOG_TAG = "FollowingPresenter";
     private static final int PAGE_SIZE = 10;
 
-    private final View view;
-    private final User targetUser;
     private final AuthToken authToken;
 
     private User lastFollowee;
@@ -33,64 +32,19 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
      * @param authToken the auth token for the current session.
      */
     public FollowingPresenter(FollowingFragment view, User targetUser, AuthToken authToken) {
-        this.view = view;
-        this.targetUser = targetUser;
+        super(view, targetUser);
         this.authToken = authToken;
     }
 
-    @Override
-    public void handleSuccessUser(User user) {
-        view.navigateToUser(user);
-    }
-
-    public interface View extends ServiceView{
-        void setLoading(boolean value);
-        void navigateToUser(User user);
-        void addItems(List<User> newUsers);
-    }
-
-    public View getView() {
-        return view;
-    }
-
-    public User getTargetUser() {
-        return targetUser;
-    }
+    public interface View extends PagedView<User>{ }
 
     public AuthToken getAuthToken() {
         return authToken;
     }
 
-    public User getLastFollowee() {
-        return lastFollowee;
-    }
-
-    public void setLastFollowee(User lastFollowee) {
-        this.lastFollowee = lastFollowee;
-    }
-
-    public boolean isHasMorePages() {
-        return hasMorePages;
-    }
-
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
-    }
-
-    public boolean isLoading() {
-        return isLoading;
-    }
-
-    public void setLoading(boolean loading) {
-        isLoading = loading;
-    }
-
-    public void loadMoreItems() {
-        if (!isLoading && hasMorePages) {
-            setLoading(true);
-            view.setLoading(true);
-
-            getFollowing(authToken, targetUser, PAGE_SIZE, lastFollowee);
+    public void loadMoreItems() throws MalformedURLException {
+        if (loadItems()) {
+            getFollowing(authToken, getUser(), PAGE_SIZE, getLastFollower());
         }
     }
 
@@ -125,35 +79,8 @@ public class FollowingPresenter implements FollowingService.GetFollowingObserver
     }
 
     @Override
-    public void handleSuccessFollowing(List<User> users, boolean hasMorePages) {
-        setLastFollowee((users.size() > 0) ? users.get(users.size() - 1) : null);
-        setHasMorePages(hasMorePages);
-        view.setLoading(false);
-        view.addItems(users);
-        setLoading(false);
-    }
-
-    @Override
-    public void handleFailure(String message) {
-        String errorMessage = "Failed to retrieve followees: " + message;
-        Log.e(LOG_TAG, errorMessage);
-        view.setLoading(false);
-        view.displayErrorMessage(errorMessage);
-        setLoading(false);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        String errorMessage = "Failed to retrieve followees because of exception: " + exception.getMessage();
-        Log.e(LOG_TAG, errorMessage, exception);
-
-        view.setLoading(false);
-        view.displayErrorMessage(errorMessage);
-        setLoading(false);
-    }
-
-    public void goToUser(User alias) {
-        view.navigateToUser(alias);
+    public void handleSuccessFollowing(List<User> users, boolean hasMorePages, User lastFollowee) throws MalformedURLException {
+        handleSuccess(users, hasMorePages, lastFollowee);
     }
 
 }

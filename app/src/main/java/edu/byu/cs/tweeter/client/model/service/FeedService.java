@@ -16,6 +16,17 @@ public class FeedService {
 
     private static final int PAGE_SIZE = 10;
 
+    private final GetFeedObserver observer;
+
+    public FeedService(GetFeedObserver observer) {
+        // An assertion would be better, but Android doesn't support Java assertions
+        if(observer == null) {
+            throw new NullPointerException();
+        }
+
+        this.observer = observer;
+    }
+
     public interface GetFeedObserver extends ServiceObserver {
         void handleSuccessFeed(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException;
     }

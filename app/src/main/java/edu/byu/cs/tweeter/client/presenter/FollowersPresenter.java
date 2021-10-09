@@ -1,109 +1,38 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowerService;
-import edu.byu.cs.tweeter.client.model.service.FollowingService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowersPresenter implements FollowerService.GetFollowersObserver, UserService.GetUserObserver {
+public class FollowersPresenter extends PagedPresenterUser implements FollowerService.GetFollowersObserver, UserService.GetUserObserver {
 
-    private static final String LOG_TAG = "FollowersPresenter";
-    private static final int PAGE_SIZE = 10;
-
-
-    private final View view;
-    private final User targetUser;
     private final AuthToken authToken;
 
-    private User lastFollowee;
-    private boolean hasMorePages = true;
-    private boolean isLoading = false;
-
     public FollowersPresenter(View view, User user, AuthToken authToken) {
-        this.view = view;
-        this.targetUser = user;
+        super(view, user);
         this.authToken = authToken;
     }
 
-    public interface View extends ServiceView {
-        void addItems(List<User> followees);
-        void setLoading(boolean value);
-        void navigateToUser(User user);
-    }
-
+    public interface View extends PagedView<User>{}
 
     @Override
-    public void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower) {
-        view.setLoading(false);
-        view.addItems(users);
-        this.hasMorePages = hasMorePages;
-        this.lastFollowee = lastFollower;
-        isLoading = false;
+    public void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower) throws MalformedURLException {
+        handleSuccess(users, hasMorePages, lastFollower);
     }
 
-    @Override
-    public void handleFailure(String message) {
-//        Toast.makeText(getContext(), "Failed to get followers: " + message, Toast.LENGTH_LONG).show();
-        view.displayErrorMessage("Failed to get followers: " + message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-//        Toast.makeText(getContext(), "Failed to get followers because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-        view.displayErrorMessage("Failed to get followers because of exception: " + exception.getMessage());
-    }
-
-    @Override
-    public void handleSuccessUser(User user) {
-        view.navigateToUser(user);
-    }
-
-    public void getTargetUser(String alias) {
+    // TODO: Ask about how to implement this with the observer
+    public void getUsers(String alias) {
         UserService.getUsers(Cache.getInstance().getCurrUserAuthToken(), alias, this);
     }
 
-    public View getView() {
-        return view;
-    }
-
-    public User getTargetUser() {
-        return targetUser;
-    }
-
-    public User getLastFollowee() {
-        return lastFollowee;
-    }
-
-    public void setLastFollowee(User lastFollowee) {
-        this.lastFollowee = lastFollowee;
-    }
-
-    public boolean isHasMorePages() {
-        return hasMorePages;
-    }
-
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
-    }
-
-    public boolean isLoading() {
-        return isLoading;
-    }
-
-    public void setLoading(boolean loading) {
-        isLoading = loading;
-    }
-
-    public void loadMoreItems() {
-        if (!isLoading && hasMorePages) {
-            isLoading = true;
-            view.setLoading(true);
-
-            getFollowers(authToken, targetUser, lastFollowee);
+    public void loadMoreItems() throws MalformedURLException {
+        if (loadItems()) {
+            getFollowers(authToken, getUser(), getLastFollower());
         }
     }
 

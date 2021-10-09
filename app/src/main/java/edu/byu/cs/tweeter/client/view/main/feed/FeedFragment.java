@@ -48,6 +48,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
 
     private User user;
     private boolean isLoading = false;
+    private boolean hasMorePages = false;
 
     private FeedPresenter presenter;
     private FeedRecyclerViewAdapter feedRecyclerViewAdapter;
@@ -96,7 +97,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
     }
 
 
-    public void loadMoreItems() {
+    public void loadMoreItemsView() {
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
             try {
@@ -142,7 +143,9 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
     public void displayInfoMessage(String message) { }
 
     @Override
-    public void clearInfoMessage() { }
+    public void clearInfoMessage() {
+
+    }
 
     /**
      * The ViewHolder for the RecyclerView that displays the feed data.
@@ -243,7 +246,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
          * Creates an instance and loads the first page of feed data.
          */
         FeedRecyclerViewAdapter() throws MalformedURLException {
-            loadMoreItems();
+            loadMoreItemsView();
         }
 
         /**
@@ -400,7 +403,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
                     if ((visibleItemCount + firstVisibleItemPosition) >=
                             totalItemCount && firstVisibleItemPosition >= 0) {
                         // Run this code later on the UI thread
-                         loadMoreItems();
+                         loadMoreItemsView();
                     }
                 }
             }

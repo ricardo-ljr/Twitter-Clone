@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,8 +144,12 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
     private void loadMoreItems() { // Services Layer
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
-            presenter.loadMoreItems();
-            }, 0);
+            try {
+                presenter.loadMoreItems();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }, 0);
     }
 
     /**

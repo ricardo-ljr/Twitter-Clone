@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.client.model.service;
 
 import android.os.Message;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersTask;
@@ -18,7 +19,7 @@ public class FollowerService {
     private final GetFollowersObserver observer;
 
     public interface GetFollowersObserver extends ServiceObserver {
-        void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower);
+        void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower) throws MalformedURLException;
     }
 
     public FollowerService(GetFollowersObserver observer) {
@@ -58,7 +59,7 @@ public class FollowerService {
         }
 
         @Override
-        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
+        protected void handleSuccessMessage(ServiceObserver observer, Message msg) throws MalformedURLException {
 
             List<User> followers = (List<User>) msg.getData().getSerializable(GetFollowersTask.ITEMS_KEY);
             boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);

@@ -5,6 +5,8 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import java.net.MalformedURLException;
+
 import edu.byu.cs.tweeter.client.backgroundTask.BackgroundTask;
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersCountTask;
 import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
@@ -21,7 +23,11 @@ public abstract class BackgroundTaskHandler<T extends ServiceObserver> extends H
     public void handleMessage(@NonNull Message msg) {
         boolean success = msg.getData().getBoolean(BackgroundTask.SUCCESS_KEY);
         if (success) {
-            handleSuccessMessage(observer, msg);
+            try {
+                handleSuccessMessage(observer, msg);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         } else if (msg.getData().containsKey(BackgroundTask.MESSAGE_KEY)) {
             String message = getFailedMessagePrefix() + ": " + msg.getData().getString(GetFollowersCountTask.MESSAGE_KEY);
             observer.handleFailure(message);
@@ -34,5 +40,5 @@ public abstract class BackgroundTaskHandler<T extends ServiceObserver> extends H
 
     protected abstract String getFailedMessagePrefix();
 
-    protected abstract void handleSuccessMessage(T observer, Message msg);
+    protected abstract void handleSuccessMessage(T observer, Message msg) throws MalformedURLException;
 }
