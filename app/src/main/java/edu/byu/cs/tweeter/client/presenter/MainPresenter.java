@@ -19,9 +19,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
         this.view = view;
     }
 
-    public PostStatusService getPostStatusService() {
-        return new PostStatusService();
-    }
 
     public interface View extends ServiceView{
         void logout();
@@ -40,8 +37,17 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
 
     public void postStatus(String post) throws ParseException, MalformedURLException {
         view.displayInfoMessage("Posting Status...");
-        getPostStatusService().postStatus(post, this);
+        getPostStatus(this, post);
     }
+
+    public void getPostStatus(PostStatusService.PostStatusObserver observer, String post) throws MalformedURLException, ParseException {
+        getPostStatusService(this).postStatus(post, observer);
+    }
+
+    public PostStatusService getPostStatusService(PostStatusService.PostStatusObserver observer) {
+        return new PostStatusService(observer);
+    }
+
 
 
     public void isFollower() {
@@ -55,7 +61,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
 
     @Override
     public void handleSuccessPostStatus(String message) {
-        Cache.getInstance().clearCache();
         view.displayInfoMessage(message);
     }
 

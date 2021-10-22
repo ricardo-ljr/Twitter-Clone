@@ -19,18 +19,24 @@ import edu.byu.cs.tweeter.model.domain.Status;
 
 public class PostStatusService {
 
-    public PostStatusService() {
+    private PostStatusObserver observer;
+    public PostStatusService(PostStatusObserver observer) {
+
+        if(observer == null) {
+            throw new NullPointerException();
+        }
+
+        this.observer = observer;
     }
 
     public interface PostStatusObserver extends ServiceObserver {
         void handleSuccessPostStatus(String message);
-
     }
 
     public void postStatus(String post, PostStatusObserver observer) throws ParseException, MalformedURLException {
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
-                newStatus, new PostStatusHandler(Looper.getMainLooper(), observer));
+                newStatus, new PostStatusHandler(observer));
         new Executor<>(statusTask);
     }
 
@@ -38,8 +44,8 @@ public class PostStatusService {
 
     private class PostStatusHandler extends BackgroundTaskHandler<PostStatusObserver> {
 
-        private PostStatusHandler(Looper looper, PostStatusObserver observer) {
-            super(looper, observer);
+        private PostStatusHandler(PostStatusObserver observer) {
+            super(observer);
         }
 
         @Override
@@ -49,7 +55,6 @@ public class PostStatusService {
 
         @Override
         protected void handleSuccessMessage(PostStatusObserver observer, Message msg) {
-            // TODO: Why is this posting after handleFailure?
             observer.handleSuccessPostStatus("Successfully Posted!");
         }
     }

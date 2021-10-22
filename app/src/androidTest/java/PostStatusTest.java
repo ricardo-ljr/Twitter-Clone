@@ -46,7 +46,7 @@ public class PostStatusTest {
 
         // Create a main presenter spy so we can mock it with the userServiceMock
         mainPresenterSpy = Mockito.spy( new MainPresenter(mockMainView) );
-        Mockito.doReturn(mockPostStatusService).when(mainPresenterSpy).getPostStatusService();
+        Mockito.doReturn(mockPostStatusService).when(mainPresenterSpy).getPostStatusService(Mockito.any());
 
         // Inject a mock cache into the Cache class
         Cache.setInstance(mockCache);
@@ -76,8 +76,8 @@ public class PostStatusTest {
         Mockito.verify(mockMainView).displayInfoMessage("Posting Status...");
         Mockito.verify(mockMainView).displayInfoMessage("Successfully Posted!");
 
-        // Verify that the cache was cleared
-        Mockito.verify(mockCache).clearCache();
+        // Verify that the cache was not cleared
+        Mockito.verify(mockCache, Mockito.times(0)).clearCache();
     }
 
     @Test

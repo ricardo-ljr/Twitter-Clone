@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage(), ex);
             presenter.handleExceptionObserver(ex);
-//            Toast.makeText(this, "Failed to post the status because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
