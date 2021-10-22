@@ -8,21 +8,16 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public abstract class Presenter<T> {
 
+    private PagedView view;
+
     private User user;
     private boolean hasMorePages = true;
     private Status lastStatus = null;
     private User lastFollower;
     private boolean isLoading = false;
 
-    protected Presenter(User user, boolean hasMorePages, Status lastStatus, boolean isLoading) {
-        this.user = user;
-        this.hasMorePages = hasMorePages;
-        this.lastStatus = lastStatus;
-        this.isLoading = isLoading;
-        this.lastFollower = lastFollower;
-    }
-
-    protected Presenter(User user) {
+    protected Presenter(PagedView view, User user) {
+        this.view = view;
         this.user = user;
     }
 
@@ -33,6 +28,9 @@ public abstract class Presenter<T> {
         void addItems(List<U> statuses);
     }
 
+    protected PagedView getView() {
+        return view;
+    }
 
     protected boolean isHasMorePages() {
         return hasMorePages;
@@ -62,17 +60,39 @@ public abstract class Presenter<T> {
         return user;
     }
 
-    // TODO: Ask if I can have public methods in my abstract class
-    public User getLastFollower() {
+    protected User getLastFollower() {
         return lastFollower;
     }
 
-    public void setLastFollower(User lastFollower) {
+    protected void setLastFollower(User lastFollower) {
         this.lastFollower = lastFollower;
     }
 
-    protected abstract boolean loadItems() throws MalformedURLException;
+    protected boolean loadItems() throws MalformedURLException {
+        if (!getIsLoading() && isHasMorePages()) {
+            setIsLoading(true);
+            getView().setLoading(true);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    // Generic abstract method
     protected abstract void handleSuccess(List<T> items, boolean hasMorePages, T last) throws MalformedURLException;
+
+    public void handleFailureObserver(String message) {
+        view.clearInfoMessage();
+        view.displayErrorMessage(message);
+    }
+
+    public void handleExceptionObserver(Exception e) {
+        view.clearInfoMessage();
+        view.displayErrorMessage(e.getMessage());
+    }
+
+    public void handleSuccessUser(User user) {
+        view.navigateToUser(user);
+    }
 
 }

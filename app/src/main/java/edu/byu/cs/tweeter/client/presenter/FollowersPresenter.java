@@ -21,11 +21,11 @@ public class FollowersPresenter extends PagedPresenterUser implements FollowerSe
     public interface View extends PagedView<User>{}
 
     @Override
-    public void handleSuccessFollower(List<User> users, boolean hasMorePages, User lastFollower) throws MalformedURLException {
+    public void handleSuccessStatus(List<User> users, boolean hasMorePages, User lastFollower) throws MalformedURLException {
         handleSuccess(users, hasMorePages, lastFollower);
     }
 
-    // TODO: Ask about how to implement this with the observer
+
     public void getUsers(String alias) {
         UserService.getUsers(Cache.getInstance().getCurrUserAuthToken(), alias, this);
     }

@@ -94,7 +94,7 @@ public class UserService {
             try {
                 this.observer.handleSuccess(registeredUser, authToken);
             } catch (Exception e) {
-                observer.handleException(e);
+                observer.handleExceptionObserver(e);
             }
         }
     }

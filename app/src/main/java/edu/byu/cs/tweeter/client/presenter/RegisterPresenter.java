@@ -15,12 +15,12 @@ public class RegisterPresenter implements UserService.RegisterObserver {
     }
 
     @Override
-    public void handleFailure(String message) {
-        view.displayErrorMessage("Failed to register: " + message);
+    public void handleFailureObserver(String message) {
+        view.displayErrorMessage(message);
     }
 
     @Override
-    public void handleException(Exception exception) {
+    public void handleExceptionObserver(Exception exception) {
         view.displayErrorMessage("Failed to register because of exception: " + exception.getMessage());
     }
 
@@ -50,7 +50,7 @@ public class RegisterPresenter implements UserService.RegisterObserver {
             new UserService().register(firstName, lastName, alias, password, image, this);
         }
         else {
-            view.displayErrorMessage("Login failed: " + message);
+            view.displayErrorMessage("Failed to Register: " + message);
         }
     }
 

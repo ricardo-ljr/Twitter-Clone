@@ -26,6 +26,10 @@ public class Cache {
         initialize();
     }
 
+    public static void setInstance(Cache mockCache) {
+        Cache.instance = mockCache;
+    }
+
     private void initialize() {
         currUser = new User(null, null, null);
         currUserAuthToken = null;

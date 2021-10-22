@@ -56,22 +56,6 @@ public class LoginFragment extends Fragment implements LoginPresenter.View {
             public void onClick(View view) {
                 // Login and move to MainActivity.
                 presenter.login(alias.getText().toString(), password.getText().toString());
-//                try {
-//                    validateLogin();
-//                    errorView.setText(null);
-//
-//                    loginInToast = Toast.makeText(getContext(), "Logging In...", Toast.LENGTH_LONG);
-//                    loginInToast.show();
-//
-//                    // Send the login request.
-//                    LoginTask loginTask = new LoginTask(alias.getText().toString(),
-//                            password.getText().toString(),
-//                            new LoginHandler());
-//                    ExecutorService executor = Executors.newSingleThreadExecutor();
-//                    executor.execute(loginTask);
-//                } catch (Exception e) {
-//                    errorView.setText(e.getMessage());
-//                }
             }
         });
 

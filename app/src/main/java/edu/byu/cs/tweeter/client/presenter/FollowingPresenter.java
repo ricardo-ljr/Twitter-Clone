@@ -20,10 +20,6 @@ public class FollowingPresenter extends PagedPresenterUser implements FollowingS
 
     private final AuthToken authToken;
 
-    private User lastFollowee;
-    private boolean hasMorePages = true;
-    private boolean isLoading = false;
-
     /**
      * Creates an instance.
      *
@@ -79,7 +75,7 @@ public class FollowingPresenter extends PagedPresenterUser implements FollowingS
     }
 
     @Override
-    public void handleSuccessFollowing(List<User> users, boolean hasMorePages, User lastFollowee) throws MalformedURLException {
+    public void handleSuccessStatus(List<User> users, boolean hasMorePages, User lastFollowee) throws MalformedURLException {
         handleSuccess(users, hasMorePages, lastFollowee);
     }
 

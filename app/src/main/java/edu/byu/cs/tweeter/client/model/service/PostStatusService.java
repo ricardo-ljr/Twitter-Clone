@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.model.service;
 
+import android.os.Looper;
 import android.os.Message;
 
 import java.net.MalformedURLException;
@@ -18,6 +19,9 @@ import edu.byu.cs.tweeter.model.domain.Status;
 
 public class PostStatusService {
 
+    public PostStatusService() {
+    }
+
     public interface PostStatusObserver extends ServiceObserver {
         void handleSuccessPostStatus(String message);
 
@@ -26,19 +30,16 @@ public class PostStatusService {
     public void postStatus(String post, PostStatusObserver observer) throws ParseException, MalformedURLException {
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
-                newStatus, new PostStatusHandler(observer));
+                newStatus, new PostStatusHandler(Looper.getMainLooper(), observer));
         new Executor<>(statusTask);
     }
 
     // PostStatusHandler
 
-    private class PostStatusHandler extends BackgroundTaskHandler {
+    private class PostStatusHandler extends BackgroundTaskHandler<PostStatusObserver> {
 
-        private PostStatusObserver observer;
-
-        private PostStatusHandler(PostStatusObserver observer) {
-            super(observer);
-            this.observer = observer;
+        private PostStatusHandler(Looper looper, PostStatusObserver observer) {
+            super(looper, observer);
         }
 
         @Override
@@ -47,8 +48,9 @@ public class PostStatusService {
         }
 
         @Override
-        protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
-            this.observer.handleSuccessPostStatus("Successfully Posted!");
+        protected void handleSuccessMessage(PostStatusObserver observer, Message msg) {
+            // TODO: Why is this posting after handleFailure?
+            observer.handleSuccessPostStatus("Successfully Posted!");
         }
     }
 

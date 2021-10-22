@@ -8,40 +8,8 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public abstract class PagedPresenterStatus extends Presenter<Status>{
 
-    private PagedView view;
-
     protected PagedPresenterStatus(PagedView view, User user) {
-        super(user);
-        this.view = view;
-    }
-
-    public void handleFailure(String message) {
-        view.displayErrorMessage("Failed: " + message);
-    }
-
-    public void handleException(Exception e) {
-        view.displayErrorMessage("Failed: " + e.getMessage());
-    }
-
-    public void handleSuccessUser(User user) {
-        view.navigateToUser(user);
-    }
-
-    protected PagedView getView() {
-        return view;
-    }
-
-    protected abstract void getUsers(String alias);
-
-    @Override
-    protected final boolean loadItems() throws MalformedURLException {
-        if (!getIsLoading() && isHasMorePages()) {
-            setIsLoading(true);
-            getView().setLoading(true);
-            return true;
-         } else {
-            return false;
-        }
+        super(view, user);
     }
 
     @Override
@@ -52,4 +20,5 @@ public abstract class PagedPresenterStatus extends Presenter<Status>{
         setLastStatus(lastStatus);
         setIsLoading(false);
     }
+
 }

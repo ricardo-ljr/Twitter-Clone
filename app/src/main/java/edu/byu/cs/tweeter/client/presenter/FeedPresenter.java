@@ -11,15 +11,15 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public class FeedPresenter extends PagedPresenterStatus implements FeedService.GetFeedObserver, UserService.GetUserObserver {
 
-    public interface View extends PagedView<Status>{ }
-
-    public FeedPresenter(View view, User user) {
-        super(view, user);
+    @Override
+    public void handleSuccessStatus(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException {
+        handleSuccess(statuses, hasMorePages, lastStatus);
     }
 
-    @Override
-    public void handleSuccessFeed(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException {
-        handleSuccess(statuses, hasMorePages, lastStatus);
+    public interface View extends PagedView<Status>{ }
+
+    public FeedPresenter(PagedView view, User user) {
+        super(view, user);
     }
 
     // Overriding previous loadMoreItems with abstract loaditems() method

@@ -15,9 +15,6 @@ public abstract class PagedTask<T> extends AuthorizedTask {
 
     public static final String ITEMS_KEY = "items";
     public static final String MORE_PAGES_KEY = "more-pages";
-    public static final String STATUSES_KEY = "statuses";
-    public static final String FOLLOWEES_KEY = "followees";
-    public static final String FOLLOWERS_KEY = "followers";
 
     /**
      * The user whose items are being retrieved.

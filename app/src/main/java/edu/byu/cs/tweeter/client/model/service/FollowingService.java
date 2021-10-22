@@ -1,14 +1,8 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import android.os.Bundle;
-import android.os.Message;
-
-import java.net.MalformedURLException;
-import java.util.List;
-
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowingTask;
-import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
 import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserverStatus;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -23,9 +17,7 @@ public class FollowingService {
      * An observer interface to be implemented by observers who want to be notified when
      * asynchronous operations complete.
      */
-    public interface GetFollowingObserver extends ServiceObserver {
-        void handleSuccessFollowing(List<User> users, boolean hasMorePages, User lastFollower) throws MalformedURLException;
-    }
+    public interface GetFollowingObserver extends ServiceObserverStatus<User> { }
 
     /**
      * Creates an instance.
@@ -74,114 +66,16 @@ public class FollowingService {
      * Handles messages from the background task indicating that the task is done, by invoking
      * methods on the observer.
      */
-    public static class GetFollowingHandler extends BackgroundTaskHandler {
-
-        private GetFollowingObserver observer;
+    public static class GetFollowingHandler extends PagedServiceStatusUser {
 
         public GetFollowingHandler(GetFollowingObserver observer) {
-            super(observer);
-            this.observer = observer;
+            super((ServiceObserver) observer);
         }
 
         @Override
         protected String getFailedMessagePrefix() {
             return "Following Service";
         }
-
-        @Override
-        protected void handleSuccessMessage(ServiceObserver observer, Message msg) throws MalformedURLException {
-            Bundle bundle = msg.getData();
-            List<User> followees = (List<User>) bundle.getSerializable(GetFollowingTask.ITEMS_KEY);
-            User lastFollower = (followees.size() > 0) ? followees.get(followees.size() - 1) : null;
-            boolean hasMorePages = bundle.getBoolean(GetFollowingTask.MORE_PAGES_KEY);
-            this.observer.handleSuccessFollowing(followees, hasMorePages, lastFollower);
-        }
     }
-
-
-//    /**
-//     * Background task that retrieves a page of other users being followed by a specified user.
-//     */
-//    public static class GetFollowingTask extends BackgroundTask {
-//
-//        private static final String LOG_TAG = "GetFollowingTask";
-//
-//        public static final String FOLLOWEES_KEY = "followees";
-//        public static final String MORE_PAGES_KEY = "more-pages";
-//
-//        /**
-//         * Auth token for logged-in user.
-//         */
-//        protected AuthToken authToken;
-//        /**
-//         * The user whose following is being retrieved.
-//         * (This can be any user, not just the currently logged-in user.)
-//         */
-//        protected User targetUser;
-//        /**
-//         * Maximum number of followed users to return (i.e., page size).
-//         */
-//        protected int limit;
-//        /**
-//         * The last person being followed returned in the previous page of results (can be null).
-//         * This allows the new page to begin where the previous page ended.
-//         */
-//        protected User lastFollowee;
-//
-//        public GetFollowingTask(AuthToken authToken, User targetUser, int limit, User lastFollowee,
-//                                Handler messageHandler) {
-//            super(messageHandler);
-//
-//            this.authToken = authToken;
-//            this.targetUser = targetUser;
-//            this.limit = limit;
-//            this.lastFollowee = lastFollowee;
-//        }
-//
-//        protected void sendSuccessMessage(List<User> followees, boolean hasMorePages) {
-//            sendSuccessMessage(new BundleLoader() {
-//                @Override
-//                public void load(Bundle msgBundle) {
-//                    msgBundle.putSerializable(FOLLOWEES_KEY, (Serializable) followees);
-//                    msgBundle.putBoolean(MORE_PAGES_KEY, hasMorePages);
-//                }
-//            });
-//        }
-//
-//        @Override
-//        protected void runTask() {
-//            try {
-//                Pair<List<User>, Boolean> pageOfUsers = getFollowees();
-//                List<User> followees = pageOfUsers.getFirst();
-//                boolean hasMorePages = pageOfUsers.getSecond();
-//
-//                loadImages(followees);
-//
-//                sendSuccessMessage(followees, hasMorePages);
-//            }
-//            catch (Exception ex) {
-//                Log.e(LOG_TAG, "Failed to get followees", ex);
-//                sendExceptionMessage(ex);
-//            }
-//        }
-//
-//        // This method is public so it can be accessed by test cases
-//        public FakeData getFakeData() {
-//            return new FakeData();
-//        }
-//
-//        // This method is public so it can be accessed by test cases
-//        public Pair<List<User>, Boolean> getFollowees() {
-//            return getFakeData().getPageOfUsers(lastFollowee, limit, targetUser);
-//        }
-//
-//        // This method is public so it can be accessed by test cases
-//        public void loadImages(List<User> followees) throws IOException {
-//            for (User u : followees) {
-//                BackgroundTaskUtils.loadImage(u);
-//            }
-//        }
-//    }
-
 }
 

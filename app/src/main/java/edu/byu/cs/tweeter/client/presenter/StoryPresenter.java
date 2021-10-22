@@ -12,7 +12,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class StoryPresenter extends PagedPresenterStatus implements StoryService.GetStoryObserver, UserService.GetUserObserver {
 
     @Override
-    public void handleSuccessStory(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException {
+    public void handleSuccessStatus(List<Status> statuses, boolean hasMorePages, Status lastStatus) throws MalformedURLException {
         handleSuccess(statuses, hasMorePages, lastStatus);
     }
 

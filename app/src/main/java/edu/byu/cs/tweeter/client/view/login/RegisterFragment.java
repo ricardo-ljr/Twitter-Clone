@@ -127,6 +127,7 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
 
     @Override
     public void clearErrorMessage() {
+
         errorView.setText("");
     }
 

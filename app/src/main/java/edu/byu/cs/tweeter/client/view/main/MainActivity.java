@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
     private TextView followeeCount;
     private TextView followerCount;
     private Button followButton;
+    private Toast eventToast;
 
     private MainPresenter presenter = new MainPresenter(this);
 
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
             presenter.postStatus(post);
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage(), ex);
-            presenter.handleException(ex);
+            presenter.handleExceptionObserver(ex);
 //            Toast.makeText(this, "Failed to post the status because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
@@ -153,17 +154,25 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     @Override
     public void clearErrorMessage() {
-
+        if (eventToast != null) {
+            eventToast.cancel();
+            eventToast = null;
+        }
     }
 
     @Override
     public void displayInfoMessage(String message) {
-        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+        clearInfoMessage();
+        eventToast = Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG);
+        eventToast.show();
     }
 
     @Override
     public void clearInfoMessage() {
-
+        if (eventToast != null) {
+            eventToast.cancel();
+            eventToast = null;
+        }
     }
 
     @Override
