@@ -16,9 +16,11 @@ import edu.byu.cs.tweeter.client.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.backgroundTask.handler.BackgroundTaskHandler;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.LoginRequest;
 
 /**
  * Contains the business logic to support the login operation.
@@ -145,7 +147,7 @@ public class UserService {
             User loggedInUser = (User) msg.getData().getSerializable(LoginTask.USER_KEY);
             AuthToken authToken = (AuthToken) msg.getData().getSerializable(LoginTask.AUTH_TOKEN_KEY);
 
-            Cache.getInstance().setCurrUser(loggedInUser);
+            Cache.getInstance().setCurrUser(loggedInUser); // TODO: Do I still need this?
             Cache.getInstance().setCurrUserAuthToken(authToken);
 
             this.observer.handleSuccess(loggedInUser, authToken);
