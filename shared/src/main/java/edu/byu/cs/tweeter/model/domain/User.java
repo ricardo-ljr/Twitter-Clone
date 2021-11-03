@@ -20,6 +20,8 @@ public class User implements Comparable<User>, Serializable {
      * The users "alias" or "handle" by which they are known to other users (e.g., @susan)
      */
     public String alias;
+
+    public String password;
     /**
      * URL that points to the user's profile image.
      */
@@ -69,6 +71,14 @@ public class User implements Comparable<User>, Serializable {
 
     public void setImageBytes(byte[] imageBytes) {
         this.imageBytes = imageBytes;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

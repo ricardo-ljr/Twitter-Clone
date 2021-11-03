@@ -1,24 +1,18 @@
 package edu.byu.cs.tweeter.model.net.request;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.User;
 
-public class LogoutRequest {
+public class UnfollowRequest {
 
-    private String alias;
     private AuthToken authToken;
+    private User user;
 
-    private LogoutRequest() {}
+    public UnfollowRequest() {}
 
-    public LogoutRequest(AuthToken authToken) {
+    public UnfollowRequest(AuthToken authToken, User user) {
         this.authToken = authToken;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
+        this.user = user;
     }
 
     public AuthToken getAuthToken() {
@@ -27,5 +21,13 @@ public class LogoutRequest {
 
     public void setAuthToken(AuthToken authToken) {
         this.authToken = authToken;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

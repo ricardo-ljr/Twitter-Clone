@@ -48,8 +48,6 @@ public class GetUserTask extends AuthorizedTask {
         BackgroundTaskUtils.loadImage(user);
     }
 
-    //TODO: BackgroundUtils load image
-
     @Override
     protected void loadBundle(Bundle msgBundle) {
         msgBundle.putSerializable(USER_KEY, user);

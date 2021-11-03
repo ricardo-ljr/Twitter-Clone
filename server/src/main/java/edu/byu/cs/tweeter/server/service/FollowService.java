@@ -1,9 +1,17 @@
 package edu.byu.cs.tweeter.server.service;
 
+import edu.byu.cs.tweeter.model.net.request.FollowRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowerCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowerRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.net.request.UnfollowRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowerCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowerResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.dao.FollowDAO;
 import edu.byu.cs.tweeter.server.util.FakeData;
 
@@ -38,6 +46,22 @@ public class FollowService {
 
     public FollowerResponse getFollowers(FollowerRequest request) {
         return getFollowingDAO().getFollowers(request);
+    }
+
+    public FollowResponse follow(FollowRequest request) {
+        return new FollowResponse(request.getUser(), request.getAuthToken());
+    }
+
+    public UnfollowResponse unfollow(UnfollowRequest request) {
+        return new UnfollowResponse(request.getUser(), request.getAuthToken());
+    }
+
+    public FollowingCountResponse followingCount(FollowingCountRequest request) {
+        return new FollowingCountResponse(request.getUser(), request.getAuthToken(), request.getCount());
+    }
+
+    public FollowerCountResponse followerCount(FollowerCountRequest request) {
+        return new FollowerCountResponse(request.getUser(), request.getAuthToken(), request.getCount());
     }
 
     FakeData getFakeData() {
