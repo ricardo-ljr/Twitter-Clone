@@ -33,6 +33,7 @@ public abstract class GetCountTask extends AuthorizedTask {
     @Override
     protected void runTask() throws IOException, TweeterRemoteException {
         count = runCountTask();
+
     }
 
     protected abstract int runCountTask() throws IOException, TweeterRemoteException;

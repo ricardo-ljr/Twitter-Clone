@@ -36,6 +36,7 @@ public class IsFollowerTask extends AuthorizedTask {
     @Override
     protected void runTask() {
         isFollower = new Random().nextInt() > 0;
+        // TODO: How to fix this?
     }
 
     @Override

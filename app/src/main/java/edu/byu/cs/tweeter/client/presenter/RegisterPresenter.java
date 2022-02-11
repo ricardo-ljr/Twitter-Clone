@@ -47,7 +47,7 @@ public class RegisterPresenter implements UserService.RegisterObserver {
 
         if (message == "Validated") {
             view.displayInfoMessage("Registering...");
-            new UserService().register(firstName, lastName, alias, password, image, this);
+            new UserService().register(alias, password, firstName, lastName, image, this);
         }
         else {
             view.displayErrorMessage("Failed to Register: " + message);

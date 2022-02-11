@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.model.service;
 
+import android.os.Looper;
 import android.os.Message;
 
 import java.net.MalformedURLException;
@@ -13,8 +14,8 @@ import edu.byu.cs.tweeter.model.domain.Status;
 
 public abstract class PagedServiceStatusUser<T extends ServiceObserver & ServiceObserverStatus, U> extends BackgroundTaskHandler<T> {
 
-    public PagedServiceStatusUser(T observer) {
-        super(observer);
+    public PagedServiceStatusUser(Looper looper,T observer) {
+        super(looper,observer);
     }
 
     @Override

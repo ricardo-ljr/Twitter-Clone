@@ -5,6 +5,7 @@ import android.os.Handler;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -43,9 +44,19 @@ public class FollowTask extends AuthorizedTask {
     protected void runTask() throws IOException, TweeterRemoteException {
         // We could do this from the presenter, without a task and handler, but we will
         // eventually access the database from here when we aren't using dummy data.
-        followee.setImageBytes(null);
-        FollowRequest followRequest = new FollowRequest(getAuthToken(), followee);
-        FollowResponse response = getServerFacade().follow(followRequest, URL_PATH);
+
+        try {
+            FollowRequest followRequest = new FollowRequest(getAuthToken(), followee, Cache.getInstance().getCurrUser());
+            FollowResponse response = getServerFacade().follow(followRequest, URL_PATH);
+
+            if (response.isSuccess()) {
+                BackgroundTaskUtils.loadImage(followRequest.getTargetUser());
+            } else {
+                sendFailedMessage("Failed to follow user");
+            }
+        } catch (Exception e) {
+            sendExceptionMessage(e);
+        }
 
     }
 

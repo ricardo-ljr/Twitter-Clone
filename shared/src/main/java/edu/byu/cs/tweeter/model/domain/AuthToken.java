@@ -38,4 +38,8 @@ public class AuthToken implements Serializable {
     public String getDatetime() {
         return datetime;
     }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
 }

@@ -48,8 +48,6 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
         return new PostStatusService(observer);
     }
 
-
-
     public void isFollower() {
         new MainService().isFollower(this);
     }
@@ -67,13 +65,13 @@ MainService.GetFollowersCountObserver, MainService.GetFollowingCountObserver, Ma
     @Override
     public void handleSuccessFollow(User user) {
         view.displayInfoMessage("Adding " + user.getName() + "...");
-        new MainService().follow(this, user);
+        new MainService().follow(this, user, Cache.getInstance().getCurrUser());
     }
 
     @Override
     public void handleSuccessUnfollow(User user) {
         view.displayErrorMessage("Unfollowing " + user.getName() + "...");
-        new MainService().unfollow(this, user);
+        new MainService().unfollow(this, user, Cache.getInstance().getCurrUser());
     }
 
     @Override

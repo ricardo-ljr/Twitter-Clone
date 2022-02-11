@@ -23,6 +23,11 @@ public class FollowingCountResponse extends Response{
         this.count = count;
     }
 
+    public FollowingCountResponse(Integer followingCount) {
+        super(true, null);
+        this.count = followingCount;
+    }
+
     public AuthToken getAuthToken() {
         return authToken;
     }

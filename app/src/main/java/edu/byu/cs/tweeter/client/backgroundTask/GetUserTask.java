@@ -44,8 +44,19 @@ public class GetUserTask extends AuthorizedTask {
 
     @Override
     protected void runTask() throws IOException, TweeterRemoteException {
-        user = getUser();
-        BackgroundTaskUtils.loadImage(user);
+        try {
+            UserRequest userRequest = new UserRequest(alias);
+            UserResponse response = getServerFacade().getUser(userRequest, URL_PATH);
+
+            if(response.isSuccess()) {
+                user = response.getUser();
+                BackgroundTaskUtils.loadImage(user);
+            } else {
+                sendFailedMessage(response.getMessage());
+            }
+        } catch (Exception e) {
+            sendExceptionMessage(e);
+        }
     }
 
     @Override
@@ -53,9 +64,4 @@ public class GetUserTask extends AuthorizedTask {
         msgBundle.putSerializable(USER_KEY, user);
     }
 
-    private User getUser() throws IOException, TweeterRemoteException {
-        UserRequest userRequest = new UserRequest(alias);
-        UserResponse response = getServerFacade().getUser(userRequest, URL_PATH);
-        return response.getUser();
-    }
 }

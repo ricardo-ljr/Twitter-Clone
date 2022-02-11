@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.PostStatusService;
 import edu.byu.cs.tweeter.client.model.service.StoryService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -24,8 +25,12 @@ public class StoryPresenter extends PagedPresenterStatus implements StoryService
 
     public void loadMoreItems() throws MalformedURLException {
         if (loadItems()) {
-            new StoryService().getStory(this, getUser(), getLastStatus());
+            getStoryService(this).getStory(this, getUser(), getLastStatus());
         }
+    }
+
+    public StoryService getStoryService(StoryService.GetStoryObserver observer) {
+        return new StoryService(observer);
     }
 
     public void getUsers(String alias) {

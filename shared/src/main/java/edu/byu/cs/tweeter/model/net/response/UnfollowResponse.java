@@ -20,6 +20,10 @@ public class UnfollowResponse extends Response{
         this.authToken = authToken;
     }
 
+    public UnfollowResponse(boolean success) {
+        super(success, null);
+    }
+
 
     public AuthToken getAuthToken() {
         return authToken;

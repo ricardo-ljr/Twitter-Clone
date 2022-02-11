@@ -23,8 +23,7 @@ public class RegisterIntegrationTest {
     private RegisterResponse failedResponse;
     private ServerFacade serverFacade;
 
-    private UserService userService;
-
+    private static final String URL_PATH = "/register";
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
 
     @Before
@@ -39,23 +38,23 @@ public class RegisterIntegrationTest {
         invalidRequest = new RegisterRequest(user2.getAlias(), user.getPassword(), user2.getFirstName(), user2.getLastName(), user2.getImageUrl());
 
         successResponse = new RegisterResponse(user, new AuthToken());
-        failedResponse = new RegisterResponse(false, "User could not be created");
+        failedResponse = new RegisterResponse(false, "User could not be registered");
 
         serverFacade = Mockito.spy(new ServerFacade());
-        Mockito.when(serverFacade.register(request, "/register")).thenReturn(successResponse);
-        Mockito.when(serverFacade.register(invalidRequest, "/register")).thenReturn(failedResponse);
+        Mockito.when(serverFacade.register(request, URL_PATH)).thenReturn(successResponse);
+        Mockito.when(serverFacade.register(invalidRequest, URL_PATH)).thenReturn(failedResponse);
 
     }
 
     @Test
     public void testRegisterSuccessful() throws IOException, TweeterRemoteException {
-        RegisterResponse response = serverFacade.register(request, "/register");
+        RegisterResponse response = serverFacade.register(request, URL_PATH);
         assertEquals(successResponse.isSuccess(), response.isSuccess());
     }
 
     @Test
     public void testRegisterFails() throws IOException, TweeterRemoteException {
-        RegisterResponse response = serverFacade.register(invalidRequest, "/register");
+        RegisterResponse response = serverFacade.register(invalidRequest, URL_PATH);
         assertEquals(failedResponse.isSuccess(), response.isSuccess());
     }
 }

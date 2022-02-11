@@ -11,4 +11,10 @@ public class Executor<T> {
         executorService.execute((Runnable) task);
     }
 
+    public Executor(T taskOne, T taskTwo) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.execute((Runnable) taskOne);
+        executor.execute((Runnable) taskTwo);
+    }
+
 }

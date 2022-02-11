@@ -18,7 +18,6 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class MainService {
 
     // Follow
-
     public interface FollowObserver extends ServiceObserver {
         void handleSuccessFollow(User user);
         void setFollowButton(boolean enabled);
@@ -27,25 +26,26 @@ public class MainService {
     }
 
     private User targetUser;
+    private User currentUser;
 
-    public void follow(FollowObserver observer, User targetUser) {
+    public void follow(FollowObserver observer, User targetUser, User currentUser) {
         this.targetUser = targetUser;
+        this.currentUser = currentUser;
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 targetUser, new FollowHandler(observer));
         new Executor<>(followTask);
     }
 
     public void updateSelectedUserFollowingAndFollowers(GetFollowersCountObserver followersCountObserver, GetFollowingCountObserver followingCountObserver, User targetUser) {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
         // Get count of most recently selected user's followers.
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 targetUser, new GetFollowersCountHandler(followersCountObserver));
-        executor.execute(followersCountTask);
 
         // Get count of most recently selected user's followees (who they are following)
         GetFollowingCountTask followingCountTask = new GetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 targetUser, new GetFollowingCountHandler(followingCountObserver));
-        executor.execute(followingCountTask);
+
+        new Executor<>(followersCountTask, followingCountTask);
     }
 
     // FollowHandler
@@ -67,7 +67,6 @@ public class MainService {
         protected void handleSuccessMessage(ServiceObserver observer, Message msg) {
             this.observer.updateSelectedUserFollowingAndFollowers(targetUser);
             this.observer.handleUpdateFollowButton(false);
-
             this.observer.setFollowButton(true);
         }
     }
@@ -81,8 +80,9 @@ public class MainService {
         void updateSelectedUserFollowingAndFollowers(User user);
     }
 
-    public void unfollow(UnfollowObserver observer, User targetUser) {
+    public void unfollow(UnfollowObserver observer, User targetUser, User currentUser) {
         this.targetUser = targetUser;
+        this.currentUser = currentUser;
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 targetUser, new UnfollowHandler(observer));
         new Executor<>(unfollowTask);

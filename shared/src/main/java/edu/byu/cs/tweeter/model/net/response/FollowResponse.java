@@ -20,6 +20,10 @@ public class FollowResponse extends Response{
         this.authToken = authToken;
     }
 
+    public FollowResponse(boolean success) {
+        super(success, null);
+    }
+
 
     public AuthToken getAuthToken() {
         return authToken;

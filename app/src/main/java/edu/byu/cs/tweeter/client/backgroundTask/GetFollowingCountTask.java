@@ -34,8 +34,7 @@ public class GetFollowingCountTask extends GetCountTask {
 
     @Override
     protected int runCountTask() throws IOException, TweeterRemoteException {
-        getTargetUser().setImageBytes(null);
-        FollowingCountRequest followingCountRequest = new FollowingCountRequest(getAuthToken(), getTargetUser(),20);
+        FollowingCountRequest followingCountRequest = new FollowingCountRequest(getAuthToken(), getTargetUser());
         FollowingCountResponse response = getServerFacade().followingCount(followingCountRequest, URL_PATH);
 
         return response.getCount();

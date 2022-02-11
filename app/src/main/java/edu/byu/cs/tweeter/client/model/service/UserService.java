@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.client.model.service;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Base64;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import edu.byu.cs.tweeter.client.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.client.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.backgroundTask.LogoutTask;
@@ -19,6 +21,7 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
 
@@ -26,6 +29,20 @@ import edu.byu.cs.tweeter.model.net.request.LoginRequest;
  * Contains the business logic to support the login operation.
  */
 public class UserService {
+
+    private LoginObserver loginObserver;
+
+    public UserService() {
+
+    }
+
+    public UserService(LoginObserver observer) {
+        if(observer == null) {
+            throw new NullPointerException();
+        }
+
+        this.loginObserver = observer;
+    }
 
     /**
      * An observer interface to be implemented by observers who want to be notified when
@@ -121,19 +138,24 @@ public class UserService {
     }
 
     public void login(String alias, String password, LoginObserver observer) {
-        LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
+        LoginTask loginTask = getGetLoginTask(alias, password, observer);
         new Executor<>(loginTask);
     }
+
+    public LoginTask getGetLoginTask(String alias, String authToken, LoginObserver observer) {
+        return new LoginTask(alias, authToken, new LoginHandler(Looper.getMainLooper(), observer));
+    }
+
 
     /**
      * Message handler (i.e., observer) for LoginTask
      */
-    private class LoginHandler extends BackgroundTaskHandler {
+    public static class LoginHandler extends BackgroundTaskHandler {
 
         private LoginObserver observer;
 
-        public LoginHandler(LoginObserver observer) {
-            super(observer);
+        public LoginHandler(Looper looper, LoginObserver observer) {
+            super(looper, observer);
             this.observer = observer;
         }
 

@@ -17,6 +17,16 @@ public class FollowingCountRequest {
         this.count = count;
     }
 
+    public FollowingCountRequest(AuthToken authToken, User user) {
+        this.authToken = authToken;
+        this.user = user;
+    }
+
+    public FollowingCountRequest(User user, int count) {
+        this.user = user;
+        this.count = count;
+    }
+
     public AuthToken getAuthToken() {
         return authToken;
     }

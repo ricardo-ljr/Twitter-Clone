@@ -41,13 +41,20 @@ public class PostStatusTask extends AuthorizedTask {
     }
 
     @Override
-    protected void runTask() throws IOException, TweeterRemoteException {
+    public void runTask() throws IOException, TweeterRemoteException {
         // TODO: Getting an Error when Posting
         // We could do this from the presenter, without a task and handler, but we will
         // eventually access the database from here when we aren't using dummy data.
-        status.getUser().setImageBytes(null);
+
         PostStatusRequest postStatusRequest = new PostStatusRequest(status);
         PostStatusResponse response = getServerFacade().postStatus(postStatusRequest, URL_PATH);
+        //
+
+        if (response.isSuccess()) {
+            return;
+        } else {
+            sendFailedMessage(response.getMessage());
+        }
 
         // Let the user know if it successfully posted
     }

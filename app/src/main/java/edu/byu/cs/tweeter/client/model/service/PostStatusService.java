@@ -36,16 +36,16 @@ public class PostStatusService {
     public void postStatus(String post, PostStatusObserver observer) throws ParseException, MalformedURLException {
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
-                newStatus, new PostStatusHandler(observer));
+                newStatus, new PostStatusHandler(Looper.getMainLooper(), observer));
         new Executor<>(statusTask);
     }
 
     // PostStatusHandler
 
-    private class PostStatusHandler extends BackgroundTaskHandler<PostStatusObserver> {
+    public static class PostStatusHandler extends BackgroundTaskHandler<PostStatusObserver> {
 
-        private PostStatusHandler(PostStatusObserver observer) {
-            super(observer);
+        public PostStatusHandler(Looper looper, PostStatusObserver observer) {
+            super(looper, observer);
         }
 
         @Override

@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.model.net.request;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 
 /**
  * Contains all the information needed to make a request to have the server return the next page of
@@ -32,6 +33,10 @@ public class FollowingRequest {
         this.followerAlias = followerAlias;
         this.limit = limit;
         this.lastFolloweeAlias = lastFolloweeAlias;
+    }
+
+    public FollowingRequest(String followerAlias) {
+        this.followerAlias = followerAlias;
     }
 
     /**

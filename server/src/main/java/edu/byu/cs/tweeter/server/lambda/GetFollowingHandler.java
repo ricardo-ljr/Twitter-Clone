@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
+import edu.byu.cs.tweeter.server.dao.DynamoDBDAOFactoryInterface;
 import edu.byu.cs.tweeter.server.service.FollowService;
 
 /**
@@ -23,7 +24,13 @@ public class GetFollowingHandler implements RequestHandler<FollowingRequest, Fol
      */
     @Override
     public FollowingResponse handleRequest(FollowingRequest request, Context context) {
-        FollowService service = new FollowService();
-        return service.getFollowees(request);
+        DynamoDBDAOFactoryInterface factory = HandlerConfig.getInstance().getFactory();
+        FollowService service = new FollowService(factory);
+        try {
+            return service.getFollowees(request);
+        } catch (RuntimeException e) {
+            String message = "[BadRequest]";
+            throw new RuntimeException(message, e);
+        }
     }
 }

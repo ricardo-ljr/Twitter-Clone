@@ -1,6 +1,8 @@
 package edu.byu.cs.tweeter.client.model.service;
 
 
+import android.os.Looper;
+
 import edu.byu.cs.tweeter.client.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserverStatus;
@@ -31,7 +33,7 @@ public class FollowerService {
 
     public GetFollowersTask getGetFollowerTask(AuthToken authToken, User targetUser, int limit, User lastFollowee) {
         return new GetFollowersTask(authToken, targetUser, limit, lastFollowee,
-                new GetFollowersHandler(observer));
+                new GetFollowersHandler(Looper.getMainLooper(), observer));
     }
 
     /**
@@ -41,8 +43,8 @@ public class FollowerService {
 
         private GetFollowersObserver observer;
 
-        public GetFollowersHandler(GetFollowersObserver observer) {
-            super((ServiceObserver) observer);
+        public GetFollowersHandler(Looper looper, GetFollowersObserver observer) {
+            super(looper,(ServiceObserver) observer);
         }
 
         @Override

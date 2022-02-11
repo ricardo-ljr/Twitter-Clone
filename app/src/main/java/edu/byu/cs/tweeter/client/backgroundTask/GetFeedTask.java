@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.client.backgroundTask;
 
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,8 +39,22 @@ public class GetFeedTask extends PagedStatusTask {
 
     @Override
     protected Pair<List<Status>, Boolean> getItems() throws IOException, TweeterRemoteException {
-        FeedRequest feedRequest = new FeedRequest(getAuthToken(), getTargetUser().alias, getLimit(), getLastItem());
-        FeedResponse response = getServerFacade().getFeed(feedRequest, URL_PATH);
-        return new Pair<>(response.getStatuses(), response.getHasMorePages());
+
+        try {
+            FeedRequest feedRequest = new FeedRequest(getAuthToken(), getTargetUser(), getLimit(), getLastItem());
+            FeedResponse response = getServerFacade().getFeed(feedRequest, URL_PATH);
+
+            if (response.isSuccess()) {
+                return new Pair<>(response.getStatuses(), response.getHasMorePages());
+            } else {
+                sendFailedMessage(response.getMessage());
+            }
+        } catch (Exception e) {
+            Log.e("FeedTask " , e.getMessage(), e);
+            sendExceptionMessage(e);
+        }
+
+        return null;
+
     }
 }

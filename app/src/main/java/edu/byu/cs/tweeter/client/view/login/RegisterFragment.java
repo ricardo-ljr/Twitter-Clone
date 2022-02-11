@@ -80,15 +80,6 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
                 // Register and move to MainActivity.
                 presenter.register(firstName.getText().toString(), lastName.getText().toString(),
                         alias.getText().toString(), password.getText().toString(), imageToUpload);
-//                try {
-//                    validateRegistration();
-//                    errorView.setText(null);
-//                    registeringToast = Toast.makeText(getContext(), "Registering...", Toast.LENGTH_LONG);
-//                    registeringToast.show();
-//
-//                } catch (Exception e) {
-//                    errorView.setText(e.getMessage());
-//                }
             }
         });
 

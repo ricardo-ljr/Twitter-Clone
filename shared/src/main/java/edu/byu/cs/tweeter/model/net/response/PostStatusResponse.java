@@ -17,6 +17,10 @@ public class PostStatusResponse extends Response{
         this.status = status;
     }
 
+    public PostStatusResponse() {
+        super(true, null);
+    }
+
     public Status getStatus() {
         return status;
     }

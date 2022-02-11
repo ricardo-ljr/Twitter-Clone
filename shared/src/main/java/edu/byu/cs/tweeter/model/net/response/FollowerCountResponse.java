@@ -22,6 +22,11 @@ public class FollowerCountResponse extends Response{
         this.count = count;
     }
 
+    public FollowerCountResponse(Integer followersCount) {
+        super(true, null);
+        this.count = followersCount;
+    }
+
     public AuthToken getAuthToken() {
         return authToken;
     }

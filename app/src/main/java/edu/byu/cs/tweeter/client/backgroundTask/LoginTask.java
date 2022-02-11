@@ -34,7 +34,7 @@ public class LoginTask extends AuthenticationTask {
     }
 
     @Override
-    protected Pair<User, AuthToken> runAuthenticationTask() throws IOException, TweeterRemoteException {
+    public Pair<User, AuthToken> runAuthenticationTask() throws IOException, TweeterRemoteException {
         LoginRequest loginRequest = new LoginRequest(username, password);
         LoginResponse response = getServerFacade().login(loginRequest, LOGIN_URL_PATH);
         User loggedInUser = response.getUser();

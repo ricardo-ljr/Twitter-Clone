@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
 import edu.byu.cs.tweeter.model.net.response.LoginResponse;
+import edu.byu.cs.tweeter.server.dao.DynamoDBDAOFactoryInterface;
 import edu.byu.cs.tweeter.server.service.UserService;
 
 /**
@@ -14,7 +15,13 @@ import edu.byu.cs.tweeter.server.service.UserService;
 public class LoginHandler implements RequestHandler<LoginRequest, LoginResponse> {
     @Override
     public LoginResponse handleRequest(LoginRequest loginRequest, Context context) {
-        UserService userService = new UserService();
-        return userService.login(loginRequest);
+        DynamoDBDAOFactoryInterface factory = HandlerConfig.getInstance().getFactory();
+        UserService loginService = new UserService(factory);
+        try {
+            return loginService.login(loginRequest);
+        } catch (RuntimeException e) {
+            String message = "[BadRequest]";
+            throw new RuntimeException(message, e);
+        }
     }
 }

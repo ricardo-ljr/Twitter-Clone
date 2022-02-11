@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.client.model.service;
 
+import android.os.Looper;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,7 +31,7 @@ public class FeedService{
 
     public static void getFeed(GetFeedObserver observer, User user, Status lastStatus) {
         GetFeedTask getFeedTask = new GetFeedTask(Cache.getInstance().getCurrUserAuthToken(),
-                user, PAGE_SIZE, lastStatus, new GetFeedHandler(observer));
+                user, PAGE_SIZE, lastStatus, new GetFeedHandler(Looper.getMainLooper(), observer));
         new Executor<>(getFeedTask);
     }
 
@@ -40,8 +42,8 @@ public class FeedService{
 
         private GetFeedObserver observer;
 
-        public GetFeedHandler(GetFeedObserver observer) {
-            super((ServiceObserver) observer);
+        public GetFeedHandler(Looper looper, GetFeedObserver observer) {
+            super(looper,(ServiceObserver) observer);
         }
 
         @Override
