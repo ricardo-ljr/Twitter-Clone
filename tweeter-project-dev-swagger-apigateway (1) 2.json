@@ -1,0 +1,1677 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2021-11-03T15:36:41Z",
+    "title": "tweeter-project"
+  },
+  "host": "mrnvrmo4ib.execute-api.us-west-1.amazonaws.com",
+  "basePath": "/dev",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/follow": {
+      "post": {
+        "description": "Post method responsible for the current user to follow another user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful!",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-follow/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/getfeed": {
+      "post": {
+        "description": "Post method responsible for retrieving the feed for the current logged user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-get-feed/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/getfollowercount": {
+      "post": {
+        "description": "POST method responsible for retrieving the current number of followers the current logged in user has.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-get-follower-count/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/getfollowers": {
+      "post": {
+        "description": "POST method responsible for retrieving the current logged in user's followers.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-get-followers/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/getfollowing": {
+      "post": {
+        "description": "POST method responsible for retrieving the current logged in user's following.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-get-following/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/getfollowingcount": {
+      "post": {
+        "description": "POST method that retrieves that current number of people that are following the current user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-get-following-count/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/getstory": {
+      "post": {
+        "description": "POST method used to retrieve all the stories of the current logged in user.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-get-story/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/getuser": {
+      "post": {
+        "description": "POST method used to retrieve all the information and nagivate to the user's page once the user is clicked on.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-get-user/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "POST method an existing user will utilize in order to login in the application.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-login/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "description": "POST method for a user to logout and end their current session. They will need to login again if they want to use the application.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-logout/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/post": {
+      "post": {
+        "description": "POST method a user will use in order to post a current status for other users to see.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-post-status/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "description": "POST method used to register a non-existing user. This will also automatically login the user once their registration is complete.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-register/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    },
+    "/unfollow": {
+      "post": {
+        "description": "POST method used for a current logged in user to click and unfollow a user they were previously following.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Request was successful",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "uri": "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-1:587140454100:function:tweeter-unfollow/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200"
+            },
+            "^\\[Internal Server Error\\].*": {
+              "statusCode": "500"
+            },
+            "^\\[BadRequest\\].*": {
+              "statusCode": "400"
+            }
+          },
+          "passthroughBehavior": "when_no_match",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200}"
+          },
+          "passthroughBehavior": "when_no_match",
+          "type": "mock"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Empty": {
+      "type": "object",
+      "title": "Empty Schema"
+    }
+  },
+  "x-amazon-apigateway-documentation": {
+    "version": "1.4",
+    "createdDate": "2021-11-03T16:40:28Z",
+    "documentationParts": [
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/follow",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "Post method responsible for the current user to follow another user."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/getfeed",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "Post method responsible for retrieving the feed for the current logged user."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/getfollowercount",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method responsible for retrieving the current number of followers the current logged in user has."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/getfollowers",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method responsible for retrieving the current logged in user's followers."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/getfollowing",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method responsible for retrieving the current logged in user's following."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/getfollowingcount",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method that retrieves that current number of people that are following the current user."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/getstory",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method used to retrieve all the stories of the current logged in user."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/getuser",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method used to retrieve all the information and nagivate to the user's page once the user is clicked on."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/login",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method an existing user will utilize in order to login in the application."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/logout",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method for a user to logout and end their current session. They will need to login again if they want to use the application."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/post",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method a user will use in order to post a current status for other users to see."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/register",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method used to register a non-existing user. This will also automatically login the user once their registration is complete."
+        }
+      },
+      {
+        "location": {
+          "type": "METHOD",
+          "path": "/unfollow",
+          "method": "POST"
+        },
+        "properties": {
+          "description": "POST method used for a current logged in user to click and unfollow a user they were previously following."
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/follow",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful!"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/follow",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/follow",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfeed",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfeed",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfeed",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowercount",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowercount",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowercount",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowers",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowers",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowers",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowing",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowing",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowing",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowingcount",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowingcount",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getfollowingcount",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getstory",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getstory",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getstory",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getuser",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getuser",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/getuser",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/login",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/login",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/login",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/logout",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/logout",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/logout",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/post",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/post",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/post",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/register",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/register",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/register",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/unfollow",
+          "method": "POST",
+          "statusCode": "200"
+        },
+        "properties": {
+          "description": "Request was successful"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/unfollow",
+          "method": "POST",
+          "statusCode": "400"
+        },
+        "properties": {
+          "description": "Bad Request"
+        }
+      },
+      {
+        "location": {
+          "type": "RESPONSE",
+          "path": "/unfollow",
+          "method": "POST",
+          "statusCode": "500"
+        },
+        "properties": {
+          "description": "Internal Server Error"
+        }
+      }
+    ]
+  }
+}
